@@ -92,40 +92,8 @@ export default async function HomePage() {
   const companies = await getCompanies();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      {/* ------------------------------------------------------------------ */}
-      {/* HEADER                                                               */}
-      {/* ------------------------------------------------------------------ */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <a href="/" className="flex items-center gap-2 select-none">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-sky-600 text-xs font-black text-white">
-              BV
-            </span>
-            <span className="text-sm font-semibold tracking-tight text-foreground hidden sm:block">
-              BowValleyCleaners
-            </span>
-          </a>
-          <nav className="flex items-center gap-3">
-            <a
-              href="/for-cleaners"
-              className="rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              For Cleaners
-            </a>
-            <a
-              href="/add-business"
-              className="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-sky-700 transition-colors"
-            >
-              List Your Business
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1">
-        <HomeClient companies={companies} />
-      </main>
-    </div>
+    <main className="flex-1">
+      <HomeClient companies={companies} />
+    </main>
   );
 }

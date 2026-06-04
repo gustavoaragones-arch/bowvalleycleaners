@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Phone, Globe, Star, MapPin, Clock, MessageSquare } from "lucide-react";
 import {
   Card,
@@ -5,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type CompanyFull, SPECIALIZATION_COLORS, type Specialization } from "@/types/company";
 
@@ -159,14 +160,17 @@ export function CompanyCard({ company }: CompanyCardProps) {
       </CardContent>
 
       <CardFooter className="mt-auto gap-2">
-        <Button
-          size="sm"
-          className="flex-1 gap-1.5 bg-sky-600 text-white hover:bg-sky-700 active:bg-sky-800"
+        <Link
+          href={`/get-quote?preferred_provider=${encodeURIComponent(name)}`}
           aria-label={`Get a quote from ${name}`}
+          className={cn(
+            buttonVariants({ size: "sm" }),
+            "flex-1 gap-1.5 bg-sky-600 text-white hover:bg-sky-700 active:bg-sky-800"
+          )}
         >
           <MessageSquare className="size-3.5" />
           Get Quote
-        </Button>
+        </Link>
 
         {phone_number && (
           <a

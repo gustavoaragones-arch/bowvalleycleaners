@@ -188,3 +188,30 @@ from companies where slug = 'bow-valley-pristine';
 insert into company_specializations (company_id, specialization)
 select id, unnest(array['Post Construction','Commercial']::specialization[])
 from companies where slug = 'summit-fresh-services';
+
+-- ============================================================
+-- PHASE 3 ADDITION: leads table
+-- (Full definition in supabase/leads.sql)
+-- ============================================================
+create table leads (
+  id                 uuid primary key default gen_random_uuid(),
+  created_at         timestamptz not null default now(),
+  property_type      varchar(64)  not null,
+  location           varchar(64)  not null,
+  property_details   text,
+  timeline           varchar(64)  not null,
+  user_name          varchar(128) not null,
+  user_email         varchar(254) not null,
+  user_phone         varchar(32),
+  preferred_provider varchar(128),
+  status             varchar(32)  not null default 'new'
+);
+
+create index idx_leads_created on leads (created_at desc);
+create index idx_leads_status  on leads (status);
+
+alter table leads enable row level security;
+
+create policy "Public lead submission"
+  on leads for insert
+  with check (true);

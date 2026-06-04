@@ -154,22 +154,6 @@ export default async function CompanyPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* ------------------------------------------------------------------ */}
-      {/* HEADER                                                               */}
-      {/* ------------------------------------------------------------------ */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4 sm:px-6">
-          <a href="/" className="flex items-center gap-2 select-none">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-sky-600 text-xs font-black text-white">
-              BV
-            </span>
-            <span className="text-sm font-semibold tracking-tight hidden sm:block">
-              BowValleyCleaners
-            </span>
-          </a>
-        </div>
-      </header>
-
       <main className="flex-1">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
           {/* Back link */}
@@ -396,3 +380,4 @@ export default async function CompanyPage({
     </div>
   );
 }
+
