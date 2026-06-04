@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Star, MapPin, Zap, X } from "lucide-react";
+import { Search, Star, MapPin, Zap, X, ShieldCheck, BadgeCheck, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CompanyCard } from "@/components/CompanyCard";
@@ -53,10 +53,17 @@ interface HomeClientProps {
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
+const TRUST_FLAGS = [
+  { key: "is_insured"            as const, icon: ShieldCheck, label: "Insured"            },
+  { key: "is_licensed"           as const, icon: BadgeCheck,  label: "Licensed"           },
+  { key: "is_background_checked" as const, icon: UserCheck,   label: "Background Checked" },
+];
+
 export function HomeClient({ companies }: HomeClientProps) {
   const [query, setQuery]               = useState("");
   const [areaFilter, setAreaFilter]     = useState<ServiceArea | "">("");
   const [activeSpecs, setActiveSpecs]   = useState<Set<Specialization>>(new Set());
+  const [trustFilters, setTrustFilters] = useState<Set<"is_insured" | "is_licensed" | "is_background_checked">>(new Set());
 
   // ---------- filtering logic ----------
   const filtered = companies.filter((c) => {
@@ -83,11 +90,15 @@ export function HomeClient({ companies }: HomeClientProps) {
       if (!hasAll) return false;
     }
 
+    for (const flag of trustFilters) {
+      if (!c[flag]) return false;
+    }
+
     return true;
   });
 
   const hasFilters =
-    query.trim() !== "" || areaFilter !== "" || activeSpecs.size > 0;
+    query.trim() !== "" || areaFilter !== "" || activeSpecs.size > 0 || trustFilters.size > 0;
 
   function toggleSpec(spec: Specialization) {
     setActiveSpecs((prev) => {
@@ -97,10 +108,19 @@ export function HomeClient({ companies }: HomeClientProps) {
     });
   }
 
+  function toggleTrust(key: "is_insured" | "is_licensed" | "is_background_checked") {
+    setTrustFilters((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  }
+
   function clearAll() {
     setQuery("");
     setAreaFilter("");
     setActiveSpecs(new Set());
+    setTrustFilters(new Set());
   }
 
   return (
@@ -257,6 +277,34 @@ export function HomeClient({ companies }: HomeClientProps) {
             </div>
           </div>
 
+          {/* Trust & Safety toggles */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Trust &amp; Safety
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {TRUST_FLAGS.map(({ key, icon: Icon, label }) => {
+                const active = trustFilters.has(key);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => toggleTrust(key)}
+                    aria-pressed={active}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
+                      active
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-400"
+                        : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:text-emerald-700"
+                    )}
+                  >
+                    <Icon className="size-3 shrink-0" />
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Clear filters */}
           {hasFilters && (
             <button
@@ -285,7 +333,10 @@ export function HomeClient({ companies }: HomeClientProps) {
                 {filtered.length === 1 ? "business" : "businesses"}
                 {areaFilter ? ` in ${areaFilter}` : ""}
                 {activeSpecs.size > 0
-                  ? ` · ${activeSpecs.size} specialization filter${activeSpecs.size > 1 ? "s" : ""} active`
+                  ? ` · ${activeSpecs.size} specialty filter${activeSpecs.size > 1 ? "s" : ""}`
+                  : ""}
+                {trustFilters.size > 0
+                  ? ` · ${trustFilters.size} trust filter${trustFilters.size > 1 ? "s" : ""}`
                   : ""}
               </p>
             </div>

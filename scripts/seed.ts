@@ -81,6 +81,9 @@ interface CsvRow {
   email?: string;
   logo_url?: string;
   is_featured?: string;
+  is_insured?: string;
+  is_licensed?: string;
+  is_background_checked?: string;
   service_areas?: string;
   specializations?: string;
 }
@@ -237,6 +240,9 @@ async function main() {
       email: row.email || null,
       logo_url: row.logo_url || null,
       is_featured: parseBool(row.is_featured),
+      is_insured: parseBool(row.is_insured),
+      is_licensed: parseBool(row.is_licensed),
+      is_background_checked: parseBool(row.is_background_checked),
       is_active: true,
     };
 

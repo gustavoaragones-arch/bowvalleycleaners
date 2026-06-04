@@ -50,6 +50,10 @@ export interface Company {
   logo_url: string | null;
   is_featured: boolean;
   is_active: boolean;
+  // Trust verification flags (Phase 4 migration)
+  is_insured: boolean;
+  is_licensed: boolean;
+  is_background_checked: boolean;
 }
 
 // Matches the `company_service_areas` join table row

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Globe, Star, MapPin, Clock, MessageSquare } from "lucide-react";
+import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -64,7 +64,16 @@ export function CompanyCard({ company }: CompanyCardProps) {
     is_featured,
     service_areas,
     specializations,
+    is_insured,
+    is_licensed,
+    is_background_checked,
   } = company;
+
+  const trustFlags = [
+    { active: is_insured,            icon: ShieldCheck, label: "Insured"            },
+    { active: is_licensed,           icon: BadgeCheck,  label: "Licensed"           },
+    { active: is_background_checked, icon: UserCheck,   label: "Background Checked" },
+  ].filter((f) => f.active);
 
   return (
     <Card
@@ -146,6 +155,21 @@ export function CompanyCard({ company }: CompanyCardProps) {
                 </span>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Trust verification stamps */}
+        {trustFlags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {trustFlags.map(({ icon: Icon, label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+              >
+                <Icon className="size-3 shrink-0" />
+                {label}
+              </span>
+            ))}
           </div>
         )}
 
