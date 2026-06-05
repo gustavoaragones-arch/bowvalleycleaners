@@ -16,13 +16,14 @@ export const dynamic = "force-dynamic";
 // ---------------------------------------------------------------------------
 // Status counts summary bar
 // ---------------------------------------------------------------------------
-const STATUS_ORDER: LeadStatus[] = ["new", "contacted", "matched", "closed"];
+const STATUS_ORDER: LeadStatus[] = ["new", "contacted", "matched", "distributed", "closed"];
 
 const STATUS_SUMMARY_CONFIG: Record<LeadStatus, { label: string; dot: string }> = {
-  new:       { label: "New",       dot: "bg-sky-500"     },
-  contacted: { label: "Contacted", dot: "bg-amber-500"   },
-  matched:   { label: "Matched",   dot: "bg-emerald-500" },
-  closed:    { label: "Closed",    dot: "bg-slate-400"   },
+  new:         { label: "New",         dot: "bg-sky-500"     },
+  contacted:   { label: "Contacted",   dot: "bg-amber-500"   },
+  matched:     { label: "Matched",     dot: "bg-emerald-500" },
+  distributed: { label: "Distributed", dot: "bg-violet-500"  },
+  closed:      { label: "Closed",      dot: "bg-slate-400"   },
 };
 
 async function fetchLeads(): Promise<Lead[]> {

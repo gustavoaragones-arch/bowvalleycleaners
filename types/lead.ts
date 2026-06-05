@@ -15,7 +15,7 @@ export type LeadTimeline =
   | "Next Month"
   | "Just Exploring";
 
-export type LeadStatus = "new" | "contacted" | "matched" | "closed";
+export type LeadStatus = "new" | "contacted" | "matched" | "distributed" | "closed";
 
 // Matches the `leads` table row
 export interface Lead {

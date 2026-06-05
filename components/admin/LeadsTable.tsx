@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronDown, ChevronRight, Phone, Mail, MapPin, FileText, User } from "lucide-react";
+import Link from "next/link";
+import { ChevronDown, ChevronRight, Phone, Mail, MapPin, FileText, User, ExternalLink } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -25,10 +26,11 @@ import type { Lead, LeadStatus } from "@/types/lead";
 // Status badge config
 // ---------------------------------------------------------------------------
 const STATUS_CONFIG: Record<LeadStatus, { label: string; className: string }> = {
-  new:       { label: "New",       className: "bg-sky-100 text-sky-700 ring-sky-300"      },
-  contacted: { label: "Contacted", className: "bg-amber-100 text-amber-700 ring-amber-300" },
-  matched:   { label: "Matched",   className: "bg-emerald-100 text-emerald-700 ring-emerald-300" },
-  closed:    { label: "Closed",    className: "bg-slate-100 text-slate-500 ring-slate-300"  },
+  new:         { label: "New",         className: "bg-sky-100 text-sky-700 ring-sky-300"           },
+  contacted:   { label: "Contacted",   className: "bg-amber-100 text-amber-700 ring-amber-300"     },
+  matched:     { label: "Matched",     className: "bg-emerald-100 text-emerald-700 ring-emerald-300" },
+  distributed: { label: "Distributed", className: "bg-violet-100 text-violet-700 ring-violet-300"  },
+  closed:      { label: "Closed",      className: "bg-slate-100 text-slate-500 ring-slate-300"      },
 };
 
 function StatusBadge({ status }: { status: LeadStatus }) {
@@ -223,7 +225,16 @@ export function LeadsTable({ leads }: LeadsTableProps) {
                   <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
                     {formatDate(lead.created_at)}
                   </TableCell>
-                  <TableCell className="font-medium">{lead.user_name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link
+                      href={`/admin/leads/${lead.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 hover:text-sky-600 hover:underline transition-colors"
+                    >
+                      {lead.user_name}
+                      <ExternalLink className="size-3 text-muted-foreground/50" />
+                    </Link>
+                  </TableCell>
                   <TableCell className="text-sm">{lead.property_type}</TableCell>
                   <TableCell className="text-sm">{lead.location}</TableCell>
                   <TableCell className="text-sm">{lead.timeline}</TableCell>
