@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck } from "lucide-react";
+import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck, Mail } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type CompanyFull, SPECIALIZATION_COLORS, type Specialization } from "@/types/company";
+import { type CompanyFull, SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type Specialization } from "@/types/company";
 
 interface CompanyCardProps {
   company: CompanyFull;
@@ -41,8 +41,8 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function SpecializationBadge({ label }: { label: Specialization }) {
-  const colors = SPECIALIZATION_COLORS[label];
+function SpecializationBadge({ label }: { label: string }) {
+  const colors = SPECIALIZATION_COLORS[label as Specialization] ?? SPECIALIZATION_COLOR_FALLBACK;
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset leading-tight ${colors.bg} ${colors.text} ${colors.ring}`}
@@ -60,6 +60,7 @@ export function CompanyCard({ company }: CompanyCardProps) {
     review_count,
     years_in_business,
     phone_number,
+    email,
     website_url,
     is_featured,
     service_areas,
@@ -207,6 +208,20 @@ export function CompanyCard({ company }: CompanyCardProps) {
           >
             <Phone className="size-3.5" />
             Call Now
+          </a>
+        )}
+
+        {email && (
+          <a
+            href={`mailto:${email}`}
+            aria-label={`Email ${name}`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "flex-1 gap-1.5"
+            )}
+          >
+            <Mail className="size-3.5" />
+            Email
           </a>
         )}
 

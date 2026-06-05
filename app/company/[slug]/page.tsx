@@ -14,7 +14,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SPECIALIZATION_COLORS, type CompanyFull, type Specialization } from "@/types/company";
+import { SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type CompanyFull, type Specialization } from "@/types/company";
 
 // ---------------------------------------------------------------------------
 // Data fetching
@@ -288,7 +288,7 @@ export default async function CompanyPage({
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {specializations.map((spec) => {
-                    const colors = SPECIALIZATION_COLORS[spec as Specialization];
+                    const colors = SPECIALIZATION_COLORS[spec as Specialization] ?? SPECIALIZATION_COLOR_FALLBACK;
                     return (
                       <span
                         key={spec}

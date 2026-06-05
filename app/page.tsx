@@ -15,7 +15,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     years_in_business: 7,
     website_url: "https://example.com",
     phone_number: "+14035550101",
-    email: null,
+    email: "hello@peaksparkle.ca",
     logo_url: null,
     is_featured: true,
     is_active: true,
@@ -24,10 +24,9 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_background_checked: false,
     service_areas: ["Canmore", "Banff", "Dead Man's Flats"],
     specializations: [
-      "Airbnb Specialist",
-      "Same Day Turnover",
-      "Laundry Included",
+      "Airbnb",
       "Property Management Support",
+      "Deep Cleaning - Move outs",
     ],
   },
   {
@@ -41,7 +40,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     years_in_business: 4,
     website_url: "https://example.com",
     phone_number: "+14035550202",
-    email: null,
+    email: "info@bowvalleypristine.ca",
     logo_url: null,
     is_featured: false,
     is_active: true,
@@ -49,7 +48,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_licensed: false,
     is_background_checked: true,
     service_areas: ["Canmore", "Cochrane"],
-    specializations: ["Luxury Homes", "Eco Friendly"],
+    specializations: ["Luxury Properties", "Eco Friendly", "Residential Homes"],
   },
   {
     id: "3",
@@ -70,7 +69,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_licensed: true,
     is_background_checked: false,
     service_areas: ["Canmore", "Banff", "Exshaw", "Calgary"],
-    specializations: ["Post Construction", "Commercial"],
+    specializations: ["Post Construction", "Commercial Buildings", "Carpet Cleaning Specialists"],
   },
 ];
 

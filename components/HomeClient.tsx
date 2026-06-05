@@ -26,14 +26,16 @@ const SERVICE_AREAS: ServiceArea[] = [
 ];
 
 const SPECIALIZATIONS: Specialization[] = [
-  "Airbnb Specialist",
-  "Luxury Homes",
-  "Commercial",
+  "Airbnb",
+  "Residential Homes",
+  "Luxury Properties",
+  "Deep Cleaning - Move outs",
   "Post Construction",
-  "Eco Friendly",
-  "Laundry Included",
+  "Commercial Buildings",
+  "Pet-Friendly Cleaning",
+  "Carpet Cleaning Specialists",
   "Property Management Support",
-  "Same Day Turnover",
+  "Eco Friendly",
 ];
 
 const PERSONAS = [

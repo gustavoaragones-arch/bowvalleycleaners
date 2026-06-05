@@ -40,14 +40,16 @@ type ServiceArea =
   | "Calgary";
 
 type Specialization =
-  | "Airbnb Specialist"
-  | "Luxury Homes"
-  | "Commercial"
+  | "Airbnb"
+  | "Residential Homes"
+  | "Luxury Properties"
+  | "Deep Cleaning - Move outs"
   | "Post Construction"
-  | "Eco Friendly"
-  | "Laundry Included"
+  | "Commercial Buildings"
+  | "Pet-Friendly Cleaning"
+  | "Carpet Cleaning Specialists"
   | "Property Management Support"
-  | "Same Day Turnover";
+  | "Eco Friendly";
 
 const VALID_AREAS = new Set<string>([
   "Canmore",
@@ -59,14 +61,16 @@ const VALID_AREAS = new Set<string>([
 ]);
 
 const VALID_SPECS = new Set<string>([
-  "Airbnb Specialist",
-  "Luxury Homes",
-  "Commercial",
+  "Airbnb",
+  "Residential Homes",
+  "Luxury Properties",
+  "Deep Cleaning - Move outs",
   "Post Construction",
-  "Eco Friendly",
-  "Laundry Included",
+  "Commercial Buildings",
+  "Pet-Friendly Cleaning",
+  "Carpet Cleaning Specialists",
   "Property Management Support",
-  "Same Day Turnover",
+  "Eco Friendly",
 ]);
 
 interface CsvRow {
@@ -78,7 +82,7 @@ interface CsvRow {
   years_in_business?: string;
   website_url?: string;
   phone_number?: string;
-  email?: string;
+  email?: string;         // nullable contact email
   logo_url?: string;
   is_featured?: string;
   is_insured?: string;
