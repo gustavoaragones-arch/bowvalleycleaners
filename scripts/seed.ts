@@ -82,12 +82,13 @@ interface CsvRow {
   years_in_business?: string;
   website_url?: string;
   phone_number?: string;
-  email?: string;         // nullable contact email
+  email?: string;
   logo_url?: string;
   is_featured?: string;
   is_insured?: string;
   is_licensed?: string;
   is_background_checked?: string;
+  business_type?: string;   // 'Cleaning Contractor' | 'Cleaning Company' | blank
   service_areas?: string;
   specializations?: string;
 }
@@ -172,6 +173,15 @@ function parseBool(raw: string | undefined): boolean {
   return ["true", "1", "yes", "y"].includes((raw ?? "").toLowerCase());
 }
 
+function parseBusinessType(raw: string | undefined): "Cleaning Contractor" | "Cleaning Company" | null {
+  const val = (raw ?? "").trim();
+  if (val === "Cleaning Contractor" || val === "Cleaning Company") return val;
+  if (val !== "") {
+    console.warn(`  ⚠  Unknown business_type: "${val}" — set to NULL`);
+  }
+  return null;
+}
+
 function parseNum(raw: string | undefined): number | null {
   if (!raw || raw.trim() === "") return null;
   const n = Number(raw.trim());
@@ -247,6 +257,7 @@ async function main() {
       is_insured: parseBool(row.is_insured),
       is_licensed: parseBool(row.is_licensed),
       is_background_checked: parseBool(row.is_background_checked),
+      business_type: parseBusinessType(row.business_type),
       is_active: true,
     };
 

@@ -22,6 +22,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_insured: true,
     is_licensed: true,
     is_background_checked: false,
+    business_type: "Cleaning Company",
     service_areas: ["Canmore", "Banff", "Dead Man's Flats"],
     specializations: [
       "Airbnb",
@@ -47,6 +48,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_insured: true,
     is_licensed: false,
     is_background_checked: true,
+    business_type: "Cleaning Contractor",
     service_areas: ["Canmore", "Cochrane"],
     specializations: ["Luxury Properties", "Eco Friendly", "Residential Homes"],
   },
@@ -68,6 +70,7 @@ const MOCK_COMPANIES: CompanyFull[] = [
     is_insured: false,
     is_licensed: true,
     is_background_checked: false,
+    business_type: "Cleaning Company",
     service_areas: ["Canmore", "Banff", "Exshaw", "Calgary"],
     specializations: ["Post Construction", "Commercial Buildings", "Carpet Cleaning Specialists"],
   },

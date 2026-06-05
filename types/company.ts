@@ -44,6 +44,8 @@ export const SPECIALIZATION_COLORS: Record<Specialization, { bg: string; text: s
   'Eco Friendly':                 { bg: 'bg-emerald-100', text: 'text-emerald-700', ring: 'ring-emerald-300' },
 };
 
+export type BusinessType = 'Cleaning Contractor' | 'Cleaning Company';
+
 // Matches the `companies` table row
 export interface Company {
   id: string;
@@ -60,10 +62,12 @@ export interface Company {
   logo_url: string | null;
   is_featured: boolean;
   is_active: boolean;
-  // Trust verification flags (Phase 4 migration)
+  // Trust verification flags
   is_insured: boolean;
   is_licensed: boolean;
   is_background_checked: boolean;
+  // Business classification
+  business_type: BusinessType | null;
 }
 
 // Matches the `company_service_areas` join table row

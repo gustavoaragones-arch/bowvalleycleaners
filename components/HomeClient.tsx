@@ -10,6 +10,7 @@ import {
   type CompanyFull,
   type ServiceArea,
   type Specialization,
+  type BusinessType,
   SPECIALIZATION_COLORS,
 } from "@/types/company";
 
@@ -66,6 +67,7 @@ export function HomeClient({ companies }: HomeClientProps) {
   const [areaFilter, setAreaFilter]     = useState<ServiceArea | "">("");
   const [activeSpecs, setActiveSpecs]   = useState<Set<Specialization>>(new Set());
   const [trustFilters, setTrustFilters] = useState<Set<"is_insured" | "is_licensed" | "is_background_checked">>(new Set());
+  const [bizType, setBizType]           = useState<BusinessType | "">("");
 
   // ---------- filtering logic ----------
   const filtered = companies.filter((c) => {
@@ -96,11 +98,13 @@ export function HomeClient({ companies }: HomeClientProps) {
       if (!c[flag]) return false;
     }
 
+    if (bizType && c.business_type !== bizType) return false;
+
     return true;
   });
 
   const hasFilters =
-    query.trim() !== "" || areaFilter !== "" || activeSpecs.size > 0 || trustFilters.size > 0;
+    query.trim() !== "" || areaFilter !== "" || activeSpecs.size > 0 || trustFilters.size > 0 || bizType !== "";
 
   function toggleSpec(spec: Specialization) {
     setActiveSpecs((prev) => {
@@ -123,6 +127,7 @@ export function HomeClient({ companies }: HomeClientProps) {
     setAreaFilter("");
     setActiveSpecs(new Set());
     setTrustFilters(new Set());
+    setBizType("");
   }
 
   return (
@@ -248,6 +253,35 @@ export function HomeClient({ companies }: HomeClientProps) {
                   {area}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Business Type radio group */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Business Type
+            </span>
+            <div className="flex gap-2" role="radiogroup" aria-label="Filter by business type">
+              {(["", "Cleaning Contractor", "Cleaning Company"] as const).map((option) => {
+                const active = bizType === option;
+                const label  = option === "" ? "Any" : option;
+                return (
+                  <button
+                    key={label}
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setBizType(option)}
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
+                      active
+                        ? "border-slate-700 bg-slate-800 text-white shadow-sm"
+                        : "border-border bg-background text-muted-foreground hover:border-slate-400 hover:text-foreground"
+                    )}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck, Mail } from "lucide-react";
+import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck, Mail, Building2, User } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type CompanyFull, SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type Specialization } from "@/types/company";
+import { type CompanyFull, SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type Specialization, type BusinessType } from "@/types/company";
 
 interface CompanyCardProps {
   company: CompanyFull;
@@ -68,7 +68,13 @@ export function CompanyCard({ company }: CompanyCardProps) {
     is_insured,
     is_licensed,
     is_background_checked,
+    business_type,
   } = company;
+
+  const BUSINESS_TYPE_CONFIG: Record<BusinessType, { icon: typeof User; className: string }> = {
+    "Cleaning Contractor": { icon: User,      className: "border-slate-200 bg-slate-50 text-slate-600" },
+    "Cleaning Company":    { icon: Building2, className: "border-slate-200 bg-slate-50 text-slate-600" },
+  };
 
   const trustFlags = [
     { active: is_insured,            icon: ShieldCheck, label: "Insured"            },
@@ -119,6 +125,20 @@ export function CompanyCard({ company }: CompanyCardProps) {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4 pt-3">
+        {/* Business type badge */}
+        {business_type && (() => {
+          const cfg = BUSINESS_TYPE_CONFIG[business_type];
+          const Icon = cfg.icon;
+          return (
+            <div>
+              <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-semibold ${cfg.className}`}>
+                <Icon className="size-3 shrink-0" />
+                {business_type}
+              </span>
+            </div>
+          );
+        })()}
+
         {/* Rating + stats row */}
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {google_rating !== null && (
