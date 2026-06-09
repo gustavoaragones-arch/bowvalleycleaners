@@ -88,10 +88,10 @@ export function HomeClient({ companies }: HomeClientProps) {
     if (areaFilter && !c.service_areas.includes(areaFilter)) return false;
 
     if (activeSpecs.size > 0) {
-      const hasAll = [...activeSpecs].every((s) =>
+      const hasAny = [...activeSpecs].some((s) =>
         c.specializations.includes(s)
       );
-      if (!hasAll) return false;
+      if (!hasAny) return false;
     }
 
     for (const flag of trustFilters) {
