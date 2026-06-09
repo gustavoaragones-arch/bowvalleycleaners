@@ -2,6 +2,9 @@ import { supabase } from "@/lib/supabase";
 import { HomeClient } from "@/components/HomeClient";
 import type { CompanyFull } from "@/types/company";
 
+// Always fetch fresh — directory data changes as companies are added/updated
+export const dynamic = "force-dynamic";
+
 // Mock data used when Supabase credentials are not yet configured
 const MOCK_COMPANIES: CompanyFull[] = [
   {
