@@ -159,18 +159,45 @@ function slugify(name: string): string {
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
+/** Maps common raw strings to canonical service area enum values. */
+function normalizeArea(raw: string): ServiceArea | null {
+  const s = raw.trim().toLowerCase();
+  if (s === "canmore")                                          return "Canmore";
+  if (s === "banff")                                           return "Banff";
+  if (["dead man's flats", "dead mans flats", "deadman's flats", "dead man flats"].includes(s))
+                                                               return "Dead Man's Flats";
+  if (s === "exshaw")                                          return "Exshaw";
+  if (s === "cochrane")                                        return "Cochrane";
+  if (s === "calgary")                                         return "Calgary";
+  return null;
+}
+
 function parseAreas(raw: string): ServiceArea[] {
   if (!raw) return [];
-  return raw
-    .split("|")
-    .map((s) => s.trim())
-    .filter((s) => {
-      if (!VALID_AREAS.has(s)) {
-        console.warn(`  ⚠  Unknown service_area: "${s}" — skipped`);
-        return false;
+  // Accept both pipe-separated (canonical) and comma-separated (common CSV export)
+  const separator = raw.includes("|") ? "|" : ",";
+  const results: ServiceArea[] = [];
+
+  for (const part of raw.split(separator)) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+
+    // Expand "Bow Valley" regional alias → Canmore + Banff
+    if (["bow valley", "the bow valley", "bow valley corridor"].includes(trimmed.toLowerCase())) {
+      for (const town of ["Canmore", "Banff"] as ServiceArea[]) {
+        if (!results.includes(town)) results.push(town);
       }
-      return true;
-    }) as ServiceArea[];
+      continue;
+    }
+
+    const canon = normalizeArea(trimmed);
+    if (canon) {
+      if (!results.includes(canon)) results.push(canon);
+    } else {
+      console.warn(`  ⚠  Unknown service_area: "${trimmed}" — skipped`);
+    }
+  }
+  return results;
 }
 
 function parseSpecs(raw: string): Specialization[] {
