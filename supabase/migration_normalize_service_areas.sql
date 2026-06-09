@@ -12,19 +12,20 @@
 -- ============================================================
 
 -- -------------------------------------------------------
--- STEP 1: Ensure the area column is text so we can inspect
---         and re-normalise regardless of current type.
+-- STEP 1: Drop the dependent view first so we can alter
+--         the column type freely, then recreate it at end.
 -- -------------------------------------------------------
+DROP VIEW IF EXISTS companies_full;
+
+-- Cast enum → text for normalisation (safe now the view is gone)
 DO $$
 BEGIN
-  -- Only alter if the column is NOT already text
   IF (
     SELECT data_type
     FROM   information_schema.columns
     WHERE  table_name  = 'company_service_areas'
     AND    column_name = 'area'
   ) <> 'text' THEN
-    -- Cast enum → text for normalisation
     ALTER TABLE company_service_areas
       ALTER COLUMN area TYPE text USING area::text;
   END IF;
@@ -99,22 +100,13 @@ SET    area = trim(area)
 WHERE  area <> trim(area);
 
 -- -------------------------------------------------------
--- STEP 4: Restore the area column to the service_area enum
---         (fails loudly if any unrecognised value remains —
---          that's intentional: fix the data, then re-run)
+-- STEP 4: Restore the area column to the service_area enum.
+-- This will error loudly if any unrecognised text value
+-- remains — intentional: fix the data, then re-run.
+-- (View is already dropped from Step 1, so no dependency.)
 -- -------------------------------------------------------
-DO $$
-BEGIN
-  IF (
-    SELECT data_type
-    FROM   information_schema.columns
-    WHERE  table_name  = 'company_service_areas'
-    AND    column_name = 'area'
-  ) = 'text' THEN
-    ALTER TABLE company_service_areas
-      ALTER COLUMN area TYPE service_area USING area::service_area;
-  END IF;
-END $$;
+ALTER TABLE company_service_areas
+  ALTER COLUMN area TYPE service_area USING area::service_area;
 
 -- -------------------------------------------------------
 -- STEP 5: Rebuild the companies_full view to be safe
