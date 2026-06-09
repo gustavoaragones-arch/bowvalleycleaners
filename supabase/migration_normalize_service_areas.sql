@@ -57,15 +57,18 @@ BEGIN
       raw_part := trim(raw_part);
 
       canon := CASE lower(raw_part)
-        WHEN 'canmore'                                          THEN 'Canmore'
-        WHEN 'banff'                                           THEN 'Banff'
-        WHEN 'dead man''s flats', 'dead mans flats',
-             'deadman''s flats', 'dead man flats'              THEN 'Dead Man''s Flats'
-        WHEN 'exshaw'                                          THEN 'Exshaw'
-        WHEN 'cochrane'                                        THEN 'Cochrane'
-        WHEN 'calgary'                                         THEN 'Calgary'
-        -- "Bow Valley" is a regional alias for the main corridor
-        WHEN 'bow valley', 'the bow valley', 'bow valley corridor' THEN 'BOW_VALLEY_EXPAND'
+        WHEN 'canmore'                  THEN 'Canmore'
+        WHEN 'banff'                    THEN 'Banff'
+        WHEN 'dead man''s flats'        THEN 'Dead Man''s Flats'
+        WHEN 'dead mans flats'          THEN 'Dead Man''s Flats'
+        WHEN 'deadman''s flats'         THEN 'Dead Man''s Flats'
+        WHEN 'dead man flats'           THEN 'Dead Man''s Flats'
+        WHEN 'exshaw'                   THEN 'Exshaw'
+        WHEN 'cochrane'                 THEN 'Cochrane'
+        WHEN 'calgary'                  THEN 'Calgary'
+        WHEN 'bow valley'               THEN 'BOW_VALLEY_EXPAND'
+        WHEN 'the bow valley'           THEN 'BOW_VALLEY_EXPAND'
+        WHEN 'bow valley corridor'      THEN 'BOW_VALLEY_EXPAND'
         ELSE NULL
       END;
 
