@@ -94,7 +94,13 @@ export function HomeClient({ companies }: HomeClientProps) {
       return false;
     }
 
-    if (areaFilter && !c.service_areas.includes(areaFilter)) return false;
+    if (areaFilter) {
+      const areas = c.service_areas ?? [];
+      const hasArea = areas.some(
+        (a) => a.toLowerCase().trim() === areaFilter.toLowerCase().trim()
+      );
+      if (!hasArea) return false;
+    }
 
     if (activeSpecs.size > 0) {
       const hasAny = [...activeSpecs].some((s) =>
