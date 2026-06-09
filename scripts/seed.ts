@@ -8,9 +8,11 @@
  *            npx tsx scripts/seed.ts --file ./data/my-file.csv --dry-run
  *
  * Required CSV columns (header row must be present, order doesn't matter):
- *   name, slug, tagline, google_rating, review_count, years_in_business,
+ *   name, tagline, google_rating, review_count, years_in_business,
  *   website_url, phone_number, email, logo_url, is_featured,
  *   service_areas, specializations
+ *
+ * `slug` is optional — it will be auto-generated from `name` if omitted.
  *
  * Multi-value columns use pipe-separated values:
  *   service_areas   → "Canmore|Banff|Cochrane"
@@ -75,7 +77,7 @@ const VALID_SPECS = new Set<string>([
 
 interface CsvRow {
   name: string;
-  slug: string;
+  slug?: string;
   tagline?: string;
   google_rating?: string;
   review_count?: string;
@@ -139,6 +141,22 @@ function splitCsvLine(line: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Generates a URL-safe slug from any company name. */
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")                  // decompose accented chars
+    .replace(/[\u0300-\u036f]/g, "")   // strip accent marks
+    .replace(/[^a-z0-9\s-]/g, "")     // remove non-alphanumeric (keeps spaces & hyphens)
+    .trim()
+    .replace(/\s+/g, "-")             // spaces → hyphens
+    .replace(/-+/g, "-");             // collapse repeated hyphens
+}
+
+// ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
 function parseAreas(raw: string): ServiceArea[] {
@@ -169,8 +187,14 @@ function parseSpecs(raw: string): Specialization[] {
     }) as Specialization[];
 }
 
+/**
+ * Permissive boolean parser.
+ * Truthy:  'true', 'TRUE', 'yes', 'Yes', 'YES', '1', 'y', 'Y'
+ * Falsy:   'false', 'FALSE', 'no', 'No', '0', 'n', 'N', empty, or any
+ *          unrecognised string (e.g. "Not explicitly stated online")
+ */
 function parseBool(raw: string | undefined): boolean {
-  return ["true", "1", "yes", "y"].includes((raw ?? "").toLowerCase());
+  return ["true", "1", "yes", "y"].includes((raw ?? "").trim().toLowerCase());
 }
 
 function parseBusinessType(raw: string | undefined): "Cleaning Contractor" | "Cleaning Company" | null {
@@ -236,15 +260,17 @@ async function main() {
   let skipped = 0;
 
   for (const row of rows) {
-    if (!row.name || !row.slug) {
-      console.warn(`  ⚠  Skipping row — missing required fields (name, slug):`, row);
+    if (!row.name) {
+      console.warn(`  ⚠  Skipping row — missing required field "name":`, row);
       skipped++;
       continue;
     }
 
+    const slug = row.slug?.trim() || slugify(row.name);
+
     const company = {
       name: row.name,
-      slug: row.slug,
+      slug,
       tagline: row.tagline || null,
       google_rating: parseNum(row.google_rating),
       review_count: parseNum(row.review_count) ?? 0,
@@ -264,7 +290,8 @@ async function main() {
     const areas = parseAreas(row.service_areas ?? "");
     const specs = parseSpecs(row.specializations ?? "");
 
-    console.log(`  ✦  ${company.name} (${company.slug})`);
+    const slugSource = row.slug?.trim() ? "csv" : "auto";
+    console.log(`  ✦  ${company.name}  →  slug: "${slug}" (${slugSource})`);
     console.log(`     areas: [${areas.join(", ")}]`);
     console.log(`     specs: [${specs.join(", ")}]`);
 
