@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Search, Star, MapPin, Zap, X, ShieldCheck, BadgeCheck, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -68,6 +68,15 @@ export function HomeClient({ companies }: HomeClientProps) {
   const [activeSpecs, setActiveSpecs]   = useState<Set<Specialization>>(new Set());
   const [trustFilters, setTrustFilters] = useState<Set<"is_insured" | "is_licensed" | "is_background_checked">>(new Set());
   const [bizType, setBizType]           = useState<BusinessType | "">("");
+  const resultsRef = useRef<HTMLElement>(null);
+
+  function scrollToResults() {
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleHeroSearch() {
+    scrollToResults();
+  }
 
   // ---------- filtering logic ----------
   const filtered = companies.filter((c) => {
@@ -170,12 +179,14 @@ export function HomeClient({ companies }: HomeClientProps) {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleHeroSearch()}
                 placeholder="Search by name, area or specialty…"
                 className="h-11 rounded-xl bg-white/10 pl-9 text-sm text-white placeholder:text-slate-400 border-white/20 focus-visible:border-sky-400 focus-visible:ring-sky-400/30"
               />
             </div>
             <Button
               size="sm"
+              onClick={handleHeroSearch}
               className="h-11 rounded-xl bg-sky-500 px-5 text-white hover:bg-sky-400 font-semibold"
             >
               Search
@@ -357,7 +368,7 @@ export function HomeClient({ companies }: HomeClientProps) {
       {/* ------------------------------------------------------------------ */}
       {/* COMPANY LISTING GRID                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="px-4 py-12 sm:px-6 sm:py-16">
+      <section ref={resultsRef} className="px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex items-end justify-between">
             <div>
