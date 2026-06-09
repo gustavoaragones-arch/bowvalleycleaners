@@ -27,18 +27,19 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Operator identity — EEAT: real-world entity signal */}
+          {/* About the project */}
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
-              Operated By
+              About
             </h3>
-            <p className="text-sm font-semibold text-white">
-              Albor Digital (Canada)
-            </p>
-            <p className="mt-1 text-xs leading-relaxed text-slate-400">
-              A digital product studio and sole proprietorship based in Canmore,
-              Alberta, Canada. We design and operate specialty local-search
-              products for underserved Canadian markets.
+            <p className="text-xs leading-relaxed text-slate-400">
+              A community resource built and maintained by a Canmore local.
+              This directory exists to make it easier for residents, property
+              managers, and visitors in the Bow Valley to find the right
+              cleaning specialist for their needs.{" "}
+              <Link href="/about" className="text-sky-500 hover:text-sky-400 transition-colors">
+                Learn more →
+              </Link>
             </p>
             <div className="mt-3 flex flex-col gap-1.5 text-xs text-slate-400">
               <span className="flex items-center gap-1.5">
@@ -46,11 +47,11 @@ export function Footer() {
                 Canmore, Alberta, Canada
               </span>
               <a
-                href="mailto:contact@albor.digital"
+                href="mailto:contact@bowvalleycleaners.ca"
                 className="flex items-center gap-1.5 hover:text-white transition-colors"
               >
                 <Mail className="size-3 shrink-0 text-sky-500" />
-                contact@albor.digital
+                contact@bowvalleycleaners.ca
               </a>
             </div>
           </div>
@@ -106,7 +107,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-[11px] text-slate-600">
-            © {CURRENT_YEAR} Albor Digital (Canada). All rights reserved.
+            © {CURRENT_YEAR} BowValleyCleaners.ca — Canmore, AB. All rights reserved.
           </p>
         </div>
 
