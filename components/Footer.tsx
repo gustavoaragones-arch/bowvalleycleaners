@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { MapPin, Mail } from "lucide-react";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -10,7 +9,7 @@ export function Footer() {
       {/* EEAT BAND — establishes authorship, operator identity, and trust    */}
       {/* ------------------------------------------------------------------ */}
       <div className="border-b border-slate-800 px-4 py-8 sm:px-6">
-        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2">
 
           {/* About the directory */}
           <div>
@@ -25,35 +24,6 @@ export function Footer() {
               Canadian Rockies. We help property managers, homeowners, and
               developers find the right specialist — not just any cleaner.
             </p>
-          </div>
-
-          {/* About the project */}
-          <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
-              About
-            </h3>
-            <p className="text-xs leading-relaxed text-slate-400">
-              A community resource built and maintained by a Canmore local.
-              This directory exists to make it easier for residents, property
-              managers, and visitors in the Bow Valley to find the right
-              cleaning specialist for their needs.{" "}
-              <Link href="/about" className="text-sky-500 hover:text-sky-400 transition-colors">
-                Learn more →
-              </Link>
-            </p>
-            <div className="mt-3 flex flex-col gap-1.5 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="size-3 shrink-0 text-sky-500" />
-                Canmore, Alberta, Canada
-              </span>
-              <a
-                href="mailto:contact@bowvalleycleaners.ca"
-                className="flex items-center gap-1.5 hover:text-white transition-colors"
-              >
-                <Mail className="size-3 shrink-0 text-sky-500" />
-                contact@bowvalleycleaners.ca
-              </a>
-            </div>
           </div>
 
           {/* Directory links */}

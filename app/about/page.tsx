@@ -130,6 +130,13 @@ export default function AboutPage() {
           </p>
 
           <p className="text-muted-foreground">
+            BowValleyCleaners.ca is a community resource built and maintained
+            by a Canmore local. This directory exists to make it easier for
+            residents, property managers, and visitors in the Bow Valley to find
+            the right cleaning specialist for their needs.
+          </p>
+
+          <p className="text-muted-foreground">
             This is not a national franchise directory or a venture-funded
             platform. It&apos;s a focused tool built for this specific community,
             kept accurate by people who live here.
