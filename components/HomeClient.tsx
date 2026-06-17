@@ -1,22 +1,15 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Search, Star, MapPin, Zap, X, ShieldCheck, BadgeCheck, UserCheck } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import { HeroSection } from "@/components/HeroSection";
+import { SearchBar, type SearchQuery } from "@/components/SearchBar";
+import { QuickFilters } from "@/components/QuickFilters";
+import { DirectorySidebar, type SidebarItem } from "@/components/DirectorySidebar";
 import { CompanyCard } from "@/components/CompanyCard";
-import { cn } from "@/lib/utils";
-import {
-  type CompanyFull,
-  type ServiceArea,
-  type Specialization,
-  type BusinessType,
-  SPECIALIZATION_COLORS,
-} from "@/types/company";
+import { TrustBar } from "@/components/TrustBar";
+import type { CompanyFull, ServiceArea, Specialization } from "@/types/company";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 const SERVICE_AREAS: ServiceArea[] = [
   "Canmore",
   "Banff",
@@ -26,397 +19,311 @@ const SERVICE_AREAS: ServiceArea[] = [
   "Calgary",
 ];
 
-const SPECIALIZATIONS: Specialization[] = [
-  "Airbnb",
-  "Residential Homes",
-  "Luxury Properties",
-  "Deep Cleaning - Move outs",
-  "Post Construction",
-  "Commercial Buildings",
-  "Pet-Friendly Cleaning",
-  "Carpet Cleaning Specialists",
-  "Property Management Support",
-  "Eco Friendly",
-];
+const LOCATION_KEYS: Record<string, ServiceArea | null> = {
+  all: null,
+  canmore: "Canmore",
+  banff: "Banff",
+  dmf: "Dead Man's Flats",
+  exshaw: "Exshaw",
+  cochrane: "Cochrane",
+  calgary: "Calgary",
+};
 
-const PERSONAS = [
-  { label: "STR Property Manager", icon: "🏠", description: "Reliable turnovers, every booking" },
-  { label: "Luxury Homeowner",     icon: "✨", description: "White-glove residential care"      },
-  { label: "New Airbnb Host",      icon: "🗝️", description: "Get guest-ready fast"              },
-  { label: "Construction Dev",     icon: "🏗️", description: "Post-build deep cleans"            },
-] as const;
+const SPECIALTY_KEYS: Record<string, Specialization> = {
+  airbnb: "Airbnb",
+  luxury: "Luxury Properties",
+  post: "Post Construction",
+  deep: "Deep Cleaning - Move outs",
+  eco: "Eco Friendly",
+  carpet: "Carpet Cleaning Specialists",
+  commercial: "Commercial Buildings",
+};
 
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
+const SEARCH_SPECIALTY: Record<string, Specialization | null> = {
+  "Any specialty": null,
+  "Airbnb / STR Turnover": "Airbnb",
+  "Post-Construction": "Post Construction",
+  "Luxury Home": "Luxury Properties",
+  "Deep Clean / Move-out": "Deep Cleaning - Move outs",
+  "Eco-Friendly": "Eco Friendly",
+  "Carpet Cleaning": "Carpet Cleaning Specialists",
+  Commercial: "Commercial Buildings",
+};
+
+const CLIENT_TYPE_SPECS: Record<string, Specialization[]> = {
+  "Any client type": [],
+  "STR Property Manager": ["Property Management Support", "Airbnb"],
+  "Luxury Homeowner": ["Luxury Properties"],
+  "New Airbnb Host": ["Airbnb"],
+  "Construction Developer": ["Post Construction"],
+};
+
+const QUICK_SPEC_MAP: Record<string, Specialization[]> = {
+  "same-day": ["Airbnb", "Property Management Support"],
+  eco: ["Eco Friendly"],
+  carpet: ["Carpet Cleaning Specialists"],
+  post: ["Post Construction"],
+};
+
 interface HomeClientProps {
   companies: CompanyFull[];
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-const TRUST_FLAGS = [
-  { key: "is_insured"            as const, icon: ShieldCheck, label: "Insured"            },
-  { key: "is_licensed"           as const, icon: BadgeCheck,  label: "Licensed"           },
-  { key: "is_background_checked" as const, icon: UserCheck,   label: "Background Checked" },
-];
+function countByArea(companies: CompanyFull[], area: ServiceArea | null) {
+  if (!area) return companies.length;
+  return companies.filter((c) => c.service_areas.includes(area)).length;
+}
+
+function countBySpec(companies: CompanyFull[], spec: Specialization) {
+  return companies.filter((c) => c.specializations.includes(spec)).length;
+}
+
+function countByTrust(companies: CompanyFull[], key: "insured" | "licensed" | "bg") {
+  const map = { insured: "is_insured", licensed: "is_licensed", bg: "is_background_checked" } as const;
+  return companies.filter((c) => c[map[key]]).length;
+}
+
+function countByRating(companies: CompanyFull[], min: number | null) {
+  if (min === null) return companies.length;
+  return companies.filter((c) => (c.google_rating ?? 0) >= min).length;
+}
 
 export function HomeClient({ companies }: HomeClientProps) {
-  const [query, setQuery]               = useState("");
-  const [areaFilter, setAreaFilter]     = useState<ServiceArea | "">("");
-  const [activeSpecs, setActiveSpecs]   = useState<Set<Specialization>>(new Set());
-  const [trustFilters, setTrustFilters] = useState<Set<"is_insured" | "is_licensed" | "is_background_checked">>(new Set());
-  const [bizType, setBizType]           = useState<BusinessType | "">("");
-  const resultsRef = useRef<HTMLElement>(null);
-
-  function scrollToResults() {
-    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function handleHeroSearch() {
-    scrollToResults();
-  }
-
-  // ---------- filtering logic ----------
-  const filtered = companies.filter((c) => {
-    if (
-      query.trim() &&
-      !c.name.toLowerCase().includes(query.toLowerCase()) &&
-      !c.tagline?.toLowerCase().includes(query.toLowerCase()) &&
-      !c.service_areas.some((a) =>
-        a.toLowerCase().includes(query.toLowerCase())
-      ) &&
-      !c.specializations.some((s) =>
-        s.toLowerCase().includes(query.toLowerCase())
-      )
-    ) {
-      return false;
-    }
-
-    if (areaFilter) {
-      const areas = c.service_areas ?? [];
-      const hasArea = areas.some(
-        (a) => a.toLowerCase().trim() === areaFilter.toLowerCase().trim()
-      );
-      if (!hasArea) return false;
-    }
-
-    if (activeSpecs.size > 0) {
-      const hasAny = [...activeSpecs].some((s) =>
-        c.specializations.includes(s)
-      );
-      if (!hasAny) return false;
-    }
-
-    for (const flag of trustFilters) {
-      if (!c[flag]) return false;
-    }
-
-    if (bizType && c.business_type !== bizType) return false;
-
-    return true;
+  const [searchQuery, setSearchQuery] = useState<SearchQuery | null>(null);
+  const [activeQuickFilters, setActiveQuickFilters] = useState<string[]>(["all"]);
+  const [sidebarFilters, setSidebarFilters] = useState<Record<string, string[]>>({
+    locations: ["all"],
+    specialties: [],
+    trust: [],
+    ratings: ["rany"],
   });
+  const [sortOrder, setSortOrder] = useState("rating");
 
-  const hasFilters =
-    query.trim() !== "" || areaFilter !== "" || activeSpecs.size > 0 || trustFilters.size > 0 || bizType !== "";
+  const avgRating = useMemo(() => {
+    const rated = companies.filter((c) => c.google_rating != null);
+    if (rated.length === 0) return "—";
+    const avg =
+      rated.reduce((sum, c) => sum + (c.google_rating ?? 0), 0) / rated.length;
+    return `${avg.toFixed(1)}★`;
+  }, [companies]);
 
-  function toggleSpec(spec: Specialization) {
-    setActiveSpecs((prev) => {
-      const next = new Set(prev);
-      next.has(spec) ? next.delete(spec) : next.add(spec);
-      return next;
+  const sidebarData = useMemo(() => {
+    const locationItems: SidebarItem[] = [
+      { label: "All areas", key: "all", count: companies.length },
+      { label: "Canmore", key: "canmore", count: countByArea(companies, "Canmore") },
+      { label: "Banff", key: "banff", count: countByArea(companies, "Banff") },
+      { label: "Dead Man's Flats", key: "dmf", count: countByArea(companies, "Dead Man's Flats") },
+      { label: "Exshaw", key: "exshaw", count: countByArea(companies, "Exshaw") },
+      { label: "Cochrane", key: "cochrane", count: countByArea(companies, "Cochrane") },
+      { label: "Calgary", key: "calgary", count: countByArea(companies, "Calgary") },
+    ];
+
+    const specialtyItems: SidebarItem[] = Object.entries(SPECIALTY_KEYS).map(
+      ([key, spec]) => ({
+        label: spec,
+        key,
+        count: countBySpec(companies, spec),
+      })
+    );
+
+    const trustItems: SidebarItem[] = [
+      { label: "Insured", key: "insured", count: countByTrust(companies, "insured") },
+      { label: "Licensed", key: "licensed", count: countByTrust(companies, "licensed") },
+      { label: "Background checked", key: "bg", count: countByTrust(companies, "bg") },
+    ];
+
+    const ratingItems: SidebarItem[] = [
+      { label: "5.0 ★ only", key: "r5", count: countByRating(companies, 4.95) },
+      { label: "4.8 ★ & above", key: "r48", count: countByRating(companies, 4.8) },
+      { label: "Any rating", key: "rany", count: companies.length },
+    ];
+
+    return { locationItems, specialtyItems, trustItems, ratingItems };
+  }, [companies]);
+
+  const filteredCompanies = useMemo(() => {
+    let result = [...companies];
+
+    // Search bar
+    if (searchQuery) {
+      const area =
+        searchQuery.location === "All areas"
+          ? null
+          : (searchQuery.location as ServiceArea);
+      const searchSpec = SEARCH_SPECIALTY[searchQuery.specialty] ?? null;
+      const clientSpecs = CLIENT_TYPE_SPECS[searchQuery.clientType] ?? [];
+
+      if (area) {
+        result = result.filter((c) => c.service_areas.includes(area));
+      }
+      if (searchSpec) {
+        result = result.filter((c) => c.specializations.includes(searchSpec));
+      }
+      if (clientSpecs.length > 0) {
+        result = result.filter((c) =>
+          clientSpecs.some((s) => c.specializations.includes(s))
+        );
+      }
+    }
+
+    // Sidebar: location (single)
+    const locKey = sidebarFilters.locations?.[0] ?? "all";
+    const locArea = LOCATION_KEYS[locKey];
+    if (locArea) {
+      result = result.filter((c) => c.service_areas.includes(locArea));
+    }
+
+    // Sidebar: specialties (OR)
+    const specKeys = sidebarFilters.specialties ?? [];
+    if (specKeys.length > 0) {
+      const specs = specKeys
+        .map((k) => SPECIALTY_KEYS[k])
+        .filter(Boolean) as Specialization[];
+      if (specs.length > 0) {
+        result = result.filter((c) =>
+          specs.some((s) => c.specializations.includes(s))
+        );
+      }
+    }
+
+    // Sidebar: trust (AND)
+    for (const key of sidebarFilters.trust ?? []) {
+      if (key === "insured") result = result.filter((c) => c.is_insured);
+      if (key === "licensed") result = result.filter((c) => c.is_licensed);
+      if (key === "bg") result = result.filter((c) => c.is_background_checked);
+    }
+
+    // Sidebar: rating (single)
+    const ratingKey = sidebarFilters.ratings?.[0] ?? "rany";
+    if (ratingKey === "r5") {
+      result = result.filter((c) => (c.google_rating ?? 0) >= 4.95);
+    } else if (ratingKey === "r48") {
+      result = result.filter((c) => (c.google_rating ?? 0) >= 4.8);
+    }
+
+    // Quick filters
+    const quick = activeQuickFilters.filter((k) => k !== "all");
+    for (const key of quick) {
+      if (key === "insured") {
+        result = result.filter((c) => c.is_insured);
+      } else if (key === "bg-checked") {
+        result = result.filter((c) => c.is_background_checked);
+      } else if (QUICK_SPEC_MAP[key]) {
+        const specs = QUICK_SPEC_MAP[key];
+        result = result.filter((c) =>
+          specs.some((s) => c.specializations.includes(s))
+        );
+      }
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      if (sortOrder === "featured") {
+        if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
+      }
+      if (sortOrder === "reviews") {
+        return (b.review_count ?? 0) - (a.review_count ?? 0);
+      }
+      return (b.google_rating ?? 0) - (a.google_rating ?? 0);
     });
+
+    return result;
+  }, [companies, searchQuery, sidebarFilters, activeQuickFilters, sortOrder]);
+
+  function handleSidebarChange(section: string, keys: string[]) {
+    setSidebarFilters((prev) => ({ ...prev, [section]: keys }));
   }
 
-  function toggleTrust(key: "is_insured" | "is_licensed" | "is_background_checked") {
-    setTrustFilters((prev) => {
-      const next = new Set(prev);
-      next.has(key) ? next.delete(key) : next.add(key);
-      return next;
+  function handleSearch(q: SearchQuery) {
+    setSearchQuery(q);
+    document.getElementById("directory-results")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
-  }
-
-  function clearAll() {
-    setQuery("");
-    setAreaFilter("");
-    setActiveSpecs(new Set());
-    setTrustFilters(new Set());
-    setBizType("");
   }
 
   return (
-    <>
-      {/* ------------------------------------------------------------------ */}
-      {/* HERO                                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 px-4 pb-20 pt-20 text-center sm:px-6 sm:pb-28 sm:pt-28">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400'%3E%3Cpolygon fill='white' points='0,400 200,100 400,250 600,50 800,200 1000,80 1200,300 1200,400'/%3E%3C/svg%3E\")",
-            backgroundSize: "cover",
-            backgroundPosition: "bottom",
-          }}
+    <div style={{ backgroundColor: "var(--bv-snow)", minHeight: "100vh" }}>
+      <HeroSection
+        providerCount={companies.length}
+        avgRating={avgRating}
+        areaCount={SERVICE_AREAS.length}
+      />
+      <SearchBar onSearch={handleSearch} />
+      <QuickFilters active={activeQuickFilters} onChange={setActiveQuickFilters} />
+
+      <div className="flex" id="directory-results">
+        <DirectorySidebar
+          locationItems={sidebarData.locationItems}
+          specialtyItems={sidebarData.specialtyItems}
+          trustItems={sidebarData.trustItems}
+          ratingItems={sidebarData.ratingItems}
+          filters={sidebarFilters}
+          onFiltersChange={handleSidebarChange}
         />
 
-        <div className="relative mx-auto max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-300">
-            <MapPin className="size-3" />
-            Canmore · Banff · Cochrane · Calgary
-          </div>
-
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Bow Valley&apos;s{" "}
-            <span className="text-sky-400">Cleaning Matchmaker</span>
-          </h1>
-
-          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-            Stop searching. Find the right specialized cleaner for your STR,
-            luxury property, or build — vetted, rated, and local to the
-            Canadian Rockies.
-          </p>
-
-          <div className="mx-auto mt-8 flex max-w-md items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleHeroSearch()}
-                placeholder="Search by name, area or specialty…"
-                className="h-11 rounded-xl bg-white/10 pl-9 text-sm text-white placeholder:text-slate-400 border-white/20 focus-visible:border-sky-400 focus-visible:ring-sky-400/30"
-              />
-            </div>
-            <Button
-              size="sm"
-              onClick={handleHeroSearch}
-              className="h-11 rounded-xl bg-sky-500 px-5 text-white hover:bg-sky-400 font-semibold"
+        <main className="flex-1 min-w-0 p-4 sm:p-5" style={{ backgroundColor: "var(--bv-snow)" }}>
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-4">
+            <p className="text-[12px]" style={{ color: "var(--bv-slate)" }}>
+              <strong style={{ color: "var(--bv-summit)" }}>
+                {filteredCompanies.length}
+              </strong>{" "}
+              verified businesses in the Bow Valley
+            </p>
+            <select
+              className="text-[11px] border rounded px-2.5 py-1 self-start"
+              style={{ borderColor: "#C5CEBC", color: "var(--bv-granite)" }}
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
             >
-              Search
-            </Button>
+              <option value="rating">Sort: Top rated</option>
+              <option value="reviews">Sort: Most reviewed</option>
+              <option value="featured">Sort: Featured first</option>
+            </select>
           </div>
 
-          <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm">
-            {[
-              { icon: <Star className="size-3.5 fill-amber-400 text-amber-400" />, text: "Avg. 4.8★ rating" },
-              { icon: <MapPin className="size-3.5 text-sky-400" />, text: "6 local areas" },
-              { icon: <Zap className="size-3.5 text-emerald-400" />, text: "Same-day turnovers" },
-            ].map(({ icon, text }) => (
-              <div key={text} className="flex items-center gap-1.5 text-slate-400">
-                {icon}
-                <span>{text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* PERSONA QUICK FILTERS                                                */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-muted/30 px-4 py-8 sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <p className="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            I&apos;m looking for a cleaner for my…
-          </p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {PERSONAS.map(({ label, icon, description }) => (
-              <button
-                key={label}
-                className="flex flex-col items-start gap-1 rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-sky-400 hover:shadow-sm hover:shadow-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
-              >
-                <span className="text-xl">{icon}</span>
-                <span className="text-sm font-semibold text-foreground leading-tight">
-                  {label}
-                </span>
-                <span className="text-[11px] text-muted-foreground leading-snug">
-                  {description}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* FILTER CONTROLS                                                      */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-background px-4 py-6 sm:px-6">
-        <div className="mx-auto max-w-6xl space-y-5">
-
-          {/* Location select */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Location
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {SERVICE_AREAS.map((area) => (
-                <button
-                  key={area}
-                  onClick={() =>
-                    setAreaFilter((prev) => (prev === area ? "" : area))
-                  }
-                  aria-pressed={areaFilter === area}
-                  className={cn(
-                    "rounded-full border px-3 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
-                    areaFilter === area
-                      ? "border-sky-500 bg-sky-50 text-sky-700 shadow-sm"
-                      : "border-border bg-background text-muted-foreground hover:border-sky-300 hover:text-foreground"
-                  )}
-                >
-                  {area}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Business Type radio group */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Business Type
-            </span>
-            <div className="flex gap-2" role="radiogroup" aria-label="Filter by business type">
-              {(["", "Cleaning Contractor", "Cleaning Company"] as const).map((option) => {
-                const active = bizType === option;
-                const label  = option === "" ? "Any" : option;
-                return (
-                  <button
-                    key={label}
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() => setBizType(option)}
-                    className={cn(
-                      "rounded-full border px-3 py-1 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
-                      active
-                        ? "border-slate-700 bg-slate-800 text-white shadow-sm"
-                        : "border-border bg-background text-muted-foreground hover:border-slate-400 hover:text-foreground"
-                    )}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Specialization toggles */}
-          <div className="flex flex-wrap items-start gap-3">
-            <span className="mt-0.5 shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Specialty
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {SPECIALIZATIONS.map((spec) => {
-                const active = activeSpecs.has(spec);
-                const colors = SPECIALIZATION_COLORS[spec];
-                return (
-                  <button
-                    key={spec}
-                    onClick={() => toggleSpec(spec)}
-                    aria-pressed={active}
-                    className={cn(
-                      "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
-                      active
-                        ? `${colors.bg} ${colors.text} ${colors.ring} opacity-100 shadow-sm`
-                        : "bg-muted text-muted-foreground ring-transparent hover:ring-border"
-                    )}
-                  >
-                    {spec}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Trust & Safety toggles */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Trust &amp; Safety
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {TRUST_FLAGS.map(({ key, icon: Icon, label }) => {
-                const active = trustFilters.has(key);
-                return (
-                  <button
-                    key={key}
-                    onClick={() => toggleTrust(key)}
-                    aria-pressed={active}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
-                      active
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-400"
-                        : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:text-emerald-700"
-                    )}
-                  >
-                    <Icon className="size-3 shrink-0" />
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Clear filters */}
-          {hasFilters && (
-            <button
-              onClick={clearAll}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="size-3" />
-              Clear all filters
-            </button>
-          )}
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* COMPANY LISTING GRID                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section ref={resultsRef} className="px-4 py-12 sm:px-6 sm:py-16">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {hasFilters ? "Matching Cleaners" : "Top Cleaners Near You"}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {filtered.length} verified{" "}
-                {filtered.length === 1 ? "business" : "businesses"}
-                {areaFilter ? ` in ${areaFilter}` : ""}
-                {activeSpecs.size > 0
-                  ? ` · ${activeSpecs.size} specialty filter${activeSpecs.size > 1 ? "s" : ""}`
-                  : ""}
-                {trustFilters.size > 0
-                  ? ` · ${trustFilters.size} trust filter${trustFilters.size > 1 ? "s" : ""}`
-                  : ""}
-              </p>
-            </div>
-          </div>
-
-          {filtered.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((company) => (
-                <CompanyCard key={company.id} company={company} />
+          {filteredCompanies.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-[880px]">
+              {filteredCompanies.map((company) => (
+                <CompanyCard
+                  key={company.id}
+                  company={company}
+                  featured={company.is_featured}
+                />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-20 text-center">
-              <Search className="size-8 text-muted-foreground/40" />
-              <p className="text-sm font-medium text-muted-foreground">
+            <div
+              className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-16 text-center"
+              style={{ borderColor: "var(--bv-border)" }}
+            >
+              <Search className="size-8 opacity-30" style={{ color: "var(--bv-slate)" }} />
+              <p className="text-sm font-medium" style={{ color: "var(--bv-slate)" }}>
                 No cleaners match your current filters.
               </p>
               <button
-                onClick={clearAll}
-                className="text-xs text-sky-600 underline-offset-2 hover:underline"
+                type="button"
+                onClick={() => {
+                  setSearchQuery(null);
+                  setActiveQuickFilters(["all"]);
+                  setSidebarFilters({
+                    locations: ["all"],
+                    specialties: [],
+                    trust: [],
+                    ratings: ["rany"],
+                  });
+                }}
+                className="text-xs hover:underline"
+                style={{ color: "var(--bv-amber)" }}
               >
-                Clear filters
+                Clear all filters
               </button>
             </div>
           )}
-        </div>
-      </section>
-    </>
+        </main>
+      </div>
+
+      <TrustBar />
+    </div>
   );
 }

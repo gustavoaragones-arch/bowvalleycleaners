@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-playfair);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -81,6 +81,32 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* ─── Bow Valley Alpine Palette ─────────────────────────────── */
+  --bv-summit:        #1A2E1A;
+  --bv-alpine:        #2D4A2D;
+  --bv-forest:        #3D6B3D;
+  --bv-sage:          #6B8F5E;
+  --bv-frost:         #E8EDE4;
+  --bv-snow:          #F4F6F1;
+  --bv-bone:          #FAF8F3;
+  --bv-border:        #DDE3D9;
+  --bv-granite:       #4A4F52;
+  --bv-slate:         #6B7280;
+  --bv-amber:         #C4820A;
+  --bv-amber-light:   #F5E6C0;
+
+  /* ─── Specialization badge token map ─── */
+  --badge-airbnb-bg:  #FDEAEA;
+  --badge-airbnb-fg:  #B83030;
+  --badge-eco-bg:     #EAF0E8;
+  --badge-eco-fg:     #2D5A1B;
+  --badge-luxury-bg:  #F5F0E8;
+  --badge-luxury-fg:  #7A5C20;
+  --badge-post-bg:    #E8EDF5;
+  --badge-post-fg:    #2A4A7A;
+  --badge-default-bg: #EEF2EB;
+  --badge-default-fg: #3D6B3D;
 }
 
 .dark {
@@ -122,9 +148,24 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply antialiased;
+    background-color: var(--bv-snow);
+    color: var(--bv-summit);
+    font-family: var(--font-sans), "Inter", sans-serif;
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .bv-card-hover {
+    @apply transition-shadow duration-150;
+  }
+  .bv-card-hover:hover {
+    box-shadow: 0 4px 20px rgba(26, 46, 26, 0.10);
+  }
+  .font-playfair {
+    font-family: var(--font-playfair), "Playfair Display", serif;
   }
 }

@@ -1,266 +1,218 @@
 import Link from "next/link";
-import { Phone, Globe, Star, MapPin, Clock, MessageSquare, ShieldCheck, BadgeCheck, UserCheck, Mail, Building2, User } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { type CompanyFull, SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type Specialization, type BusinessType } from "@/types/company";
+import type { CSSProperties } from "react";
+import type { CompanyFull } from "@/types/company";
+
+function getSpecBadgeStyle(spec: string): CSSProperties {
+  const s = spec.toLowerCase();
+  if (s.includes("airbnb") || s.includes("str"))
+    return { backgroundColor: "var(--badge-airbnb-bg)", color: "var(--badge-airbnb-fg)" };
+  if (s.includes("eco"))
+    return { backgroundColor: "var(--badge-eco-bg)", color: "var(--badge-eco-fg)" };
+  if (s.includes("luxury"))
+    return { backgroundColor: "var(--badge-luxury-bg)", color: "var(--badge-luxury-fg)" };
+  if (s.includes("post") || s.includes("construct"))
+    return { backgroundColor: "var(--badge-post-bg)", color: "var(--badge-post-fg)" };
+  return { backgroundColor: "var(--badge-default-bg)", color: "var(--badge-default-fg)" };
+}
+
+function AvatarInitials({ name, featured }: { name: string; featured?: boolean }) {
+  const initials = name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("");
+  return (
+    <div
+      className="w-10 h-10 rounded-lg flex items-center justify-center text-[13px] font-bold text-white flex-shrink-0 font-playfair"
+      style={{
+        backgroundColor: featured ? "var(--bv-amber)" : "var(--bv-alpine)",
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+function StarRating({ rating, reviewCount }: { rating: number; reviewCount: number }) {
+  return (
+    <div className="flex items-center gap-1 mt-0.5">
+      <span className="text-[11px] font-semibold" style={{ color: "var(--bv-amber)" }}>
+        {"★".repeat(Math.round(rating))}
+      </span>
+      <span className="text-[11px] font-semibold" style={{ color: "var(--bv-amber)" }}>
+        {rating.toFixed(1)}
+      </span>
+      <span className="text-[10px]" style={{ color: "var(--bv-slate)" }}>
+        ({reviewCount} reviews)
+      </span>
+    </div>
+  );
+}
 
 interface CompanyCardProps {
   company: CompanyFull;
+  featured?: boolean;
 }
 
-function StarRating({ rating }: { rating: number }) {
-  const full = Math.floor(rating);
-  const partial = rating - full;
-  return (
-    <span className="inline-flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
-      {Array.from({ length: 5 }, (_, i) => {
-        if (i < full) {
-          return (
-            <Star key={i} className="size-3.5 fill-amber-400 text-amber-400" />
-          );
-        }
-        if (i === full && partial >= 0.5) {
-          return (
-            <span key={i} className="relative inline-block size-3.5">
-              <Star className="absolute inset-0 size-3.5 text-amber-200 fill-amber-200" />
-              <span className="absolute inset-0 overflow-hidden w-1/2">
-                <Star className="size-3.5 fill-amber-400 text-amber-400" />
-              </span>
-            </span>
-          );
-        }
-        return <Star key={i} className="size-3.5 text-amber-200 fill-amber-200" />;
-      })}
-    </span>
-  );
-}
-
-function SpecializationBadge({ label }: { label: string }) {
-  const colors = SPECIALIZATION_COLORS[label as Specialization] ?? SPECIALIZATION_COLOR_FALLBACK;
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset leading-tight ${colors.bg} ${colors.text} ${colors.ring}`}
-    >
-      {label}
-    </span>
-  );
-}
-
-export function CompanyCard({ company }: CompanyCardProps) {
+export function CompanyCard({ company, featured }: CompanyCardProps) {
+  const isFeatured = featured ?? company.is_featured;
   const {
     name,
-    tagline,
+    slug,
+    business_type,
     google_rating,
     review_count,
-    years_in_business,
-    phone_number,
-    email,
-    website_url,
-    is_featured,
     service_areas,
     specializations,
     is_insured,
     is_licensed,
     is_background_checked,
-    business_type,
+    years_in_business,
+    phone_number,
+    email,
+    website_url,
   } = company;
 
-  const BUSINESS_TYPE_CONFIG: Record<BusinessType, { icon: typeof User; className: string }> = {
-    "Cleaning Contractor": { icon: User,      className: "border-slate-200 bg-slate-50 text-slate-600" },
-    "Cleaning Company":    { icon: Building2, className: "border-slate-200 bg-slate-50 text-slate-600" },
-  };
-
-  const trustFlags = [
-    { active: is_insured,            icon: ShieldCheck, label: "Insured"            },
-    { active: is_licensed,           icon: BadgeCheck,  label: "Licensed"           },
-    { active: is_background_checked, icon: UserCheck,   label: "Background Checked" },
-  ].filter((f) => f.active);
+  const trustBadges = [
+    is_insured && "Insured",
+    is_licensed && "Licensed",
+    is_background_checked && "Bg. checked",
+  ].filter(Boolean) as string[];
 
   return (
-    <Card
-      className={`relative flex flex-col transition-shadow duration-200 hover:shadow-lg ${
-        is_featured
-          ? "ring-2 ring-sky-500/60 shadow-md shadow-sky-100"
-          : "hover:ring-foreground/15"
-      }`}
+    <article
+      className="relative rounded-xl p-4 bv-card-hover"
+      style={{
+        backgroundColor: "white",
+        border: isFeatured
+          ? "1.5px solid var(--bv-amber)"
+          : "1px solid var(--bv-border)",
+      }}
     >
-      {/* Featured ribbon */}
-      {is_featured && (
-        <div className="absolute top-3 right-3 z-10">
-          <span className="inline-flex items-center gap-1 rounded-full bg-sky-500 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-sm uppercase tracking-wide">
-            <Star className="size-2.5 fill-white" />
-            Featured
-          </span>
+      {isFeatured && (
+        <div
+          className="absolute -top-px right-3 text-[9px] font-bold tracking-widest uppercase text-white px-3 py-[3px] rounded-b-md"
+          style={{ backgroundColor: "var(--bv-amber)" }}
+        >
+          Featured
         </div>
       )}
 
-      <CardHeader className="pb-0">
-        {/* Logo placeholder / initials avatar */}
-        <div className="flex items-start gap-3">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 text-base font-bold text-slate-600 ring-1 ring-slate-200 select-none">
-            {name
-              .split(" ")
-              .slice(0, 2)
-              .map((w) => w[0])
-              .join("")
-              .toUpperCase()}
+      <div className="flex gap-3 mb-3">
+        <AvatarInitials name={name} featured={isFeatured} />
+        <div className="flex-1 min-w-0">
+          <Link
+            href={`/company/${slug}`}
+            className="text-[13px] font-semibold truncate block no-underline hover:underline"
+            style={{ color: "var(--bv-summit)" }}
+          >
+            {name}
+          </Link>
+          <div
+            className="text-[10px] uppercase tracking-[0.7px]"
+            style={{ color: "var(--bv-slate)" }}
+          >
+            {business_type ?? "Cleaning Provider"}
+            {years_in_business ? ` · ${years_in_business} yrs` : ""}
           </div>
-          <div className="min-w-0 flex-1 pr-16">
-            <h3 className="truncate text-[15px] font-semibold leading-snug text-foreground">
-              {name}
-            </h3>
-            {tagline && (
-              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground line-clamp-2">
-                {tagline}
-              </p>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="flex flex-col gap-4 pt-3">
-        {/* Business type badge */}
-        {business_type && (() => {
-          const cfg = BUSINESS_TYPE_CONFIG[business_type];
-          const Icon = cfg.icon;
-          return (
-            <div>
-              <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-semibold ${cfg.className}`}>
-                <Icon className="size-3 shrink-0" />
-                {business_type}
-              </span>
-            </div>
-          );
-        })()}
-
-        {/* Rating + stats row */}
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          {google_rating !== null && (
-            <div className="flex items-center gap-1.5">
-              <StarRating rating={google_rating} />
-              <span className="font-semibold tabular-nums text-foreground">
-                {google_rating.toFixed(1)}
-              </span>
-              <span className="text-muted-foreground">
-                ({review_count.toLocaleString()} reviews)
-              </span>
-            </div>
-          )}
-          {years_in_business !== null && (
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Clock className="size-3.5 shrink-0" />
-              <span className="text-xs font-medium">
-                {years_in_business} yr{years_in_business !== 1 ? "s" : ""} in business
-              </span>
-            </div>
+          {google_rating != null && (
+            <StarRating rating={google_rating} reviewCount={review_count} />
           )}
         </div>
+      </div>
 
-        {/* Service areas */}
-        {service_areas.length > 0 && (
-          <div className="flex flex-wrap items-start gap-1.5">
-            <MapPin className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
-            <div className="flex flex-wrap gap-1">
-              {service_areas.map((area) => (
-                <span
-                  key={area}
-                  className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600"
-                >
-                  {area}
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="flex flex-wrap gap-1 mb-2">
+        {service_areas.map((loc) => (
+          <span
+            key={loc}
+            className="text-[10px] font-medium px-2 py-0.5 rounded-sm"
+            style={{ backgroundColor: "var(--bv-frost)", color: "var(--bv-alpine)" }}
+          >
+            ⌂ {loc}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-1 mb-3">
+        {specializations.slice(0, 4).map((spec) => (
+          <span
+            key={spec}
+            className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+            style={getSpecBadgeStyle(spec)}
+          >
+            {spec}
+          </span>
+        ))}
+        {specializations.length > 4 && (
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full"
+            style={{ backgroundColor: "var(--bv-frost)", color: "var(--bv-slate)" }}
+          >
+            +{specializations.length - 4}
+          </span>
         )}
+      </div>
 
-        {/* Trust verification stamps */}
-        {trustFlags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {trustFlags.map(({ icon: Icon, label }) => (
+      {trustBadges.length > 0 && (
+        <div className="flex flex-wrap gap-3 mb-3">
+          {trustBadges.map((badge) => (
+            <div key={badge} className="flex items-center gap-1">
+              <div
+                className="w-[6px] h-[6px] rounded-full flex-shrink-0"
+                style={{ backgroundColor: "var(--bv-sage)" }}
+              />
               <span
-                key={label}
-                className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+                className="text-[9px] font-semibold uppercase tracking-[0.5px]"
+                style={{ color: "var(--bv-sage)" }}
               >
-                <Icon className="size-3 shrink-0" />
-                {label}
+                {badge}
               </span>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+      )}
 
-        {/* Specialization badges */}
-        {specializations.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {specializations.map((spec) => (
-              <SpecializationBadge key={spec} label={spec} />
-            ))}
-          </div>
-        )}
-      </CardContent>
-
-      <CardFooter className="mt-auto gap-2">
+      <div className="flex gap-1.5">
         <Link
           href={`/get-quote?preferred_provider=${encodeURIComponent(name)}`}
-          aria-label={`Get a quote from ${name}`}
-          className={cn(
-            buttonVariants({ size: "sm" }),
-            "flex-1 gap-1.5 bg-sky-600 text-white hover:bg-sky-700 active:bg-sky-800"
-          )}
+          className="flex-1 py-2 text-center text-[11px] font-semibold text-white rounded no-underline transition-opacity hover:opacity-90"
+          style={{ backgroundColor: isFeatured ? "var(--bv-amber)" : "var(--bv-alpine)" }}
         >
-          <MessageSquare className="size-3.5" />
           Get Quote
         </Link>
-
         {phone_number && (
           <a
             href={`tel:${phone_number.replace(/\s/g, "")}`}
-            aria-label={`Call ${name}`}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "flex-1 gap-1.5"
-            )}
+            className="w-8 h-8 flex items-center justify-center border rounded text-[13px] no-underline transition-colors hover:bg-gray-50"
+            style={{ borderColor: "var(--bv-border)", color: "var(--bv-slate)" }}
+            aria-label="Call"
           >
-            <Phone className="size-3.5" />
-            Call Now
+            📞
           </a>
         )}
-
         {email && (
           <a
             href={`mailto:${email}`}
-            aria-label={`Email ${name}`}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "flex-1 gap-1.5"
-            )}
+            className="w-8 h-8 flex items-center justify-center border rounded text-[13px] no-underline transition-colors hover:bg-gray-50"
+            style={{ borderColor: "var(--bv-border)", color: "var(--bv-slate)" }}
+            aria-label="Email"
           >
-            <Mail className="size-3.5" />
-            Email
+            ✉
           </a>
         )}
-
         {website_url && (
           <a
             href={website_url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Visit ${name} website`}
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "gap-1.5 px-2.5"
-            )}
+            className="w-8 h-8 flex items-center justify-center border rounded text-[13px] no-underline transition-colors hover:bg-gray-50"
+            style={{ borderColor: "var(--bv-border)", color: "var(--bv-slate)" }}
+            aria-label="Website"
           >
-            <Globe className="size-3.5" />
-            Website
+            ↗
           </a>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </article>
   );
 }
