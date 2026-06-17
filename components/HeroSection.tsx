@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface HeroSectionProps {
   providerCount: number;
   avgRating: string;
@@ -10,53 +12,9 @@ export function HeroSection({ providerCount, avgRating, areaCount }: HeroSection
       className="relative overflow-hidden"
       style={{ backgroundColor: "var(--bv-summit)", paddingTop: "52px", paddingBottom: 0 }}
     >
-      <div className="relative z-10 bv-container pb-0">
-        <p
-          className="text-[10px] tracking-[2px] uppercase font-semibold mb-3"
-          style={{ color: "var(--bv-amber)" }}
-        >
-          Canadian Rockies · Canmore · Banff · Cochrane
-        </p>
-
-        <h1
-          className="text-[26px] sm:text-[34px] lg:text-[38px] leading-[1.18] max-w-[420px] mb-4 font-playfair"
-          style={{ color: "var(--bv-frost)" }}
-        >
-          The <em className="italic" style={{ color: "var(--bv-sage)" }}>intelligent</em>{" "}
-          matchmaker for Rocky Mountain cleaning
-        </h1>
-
-        <p
-          className="text-[13px] leading-relaxed max-w-[360px] mb-8"
-          style={{ color: "rgba(232,237,228,0.65)" }}
-        >
-          Connect with vetted, specialist cleaners for STR turnovers, luxury properties, and
-          post-construction. Not just any cleaner — the right one.
-        </p>
-
-        <div className="flex flex-wrap gap-8 pb-10">
-          {[
-            { val: String(providerCount), label: "Verified providers" },
-            { val: avgRating, label: "Avg. rating" },
-            { val: String(areaCount), label: "Local areas" },
-          ].map(({ val, label }) => (
-            <div key={label}>
-              <div className="text-[24px] font-semibold" style={{ color: "var(--bv-frost)" }}>
-                {val}
-              </div>
-              <div
-                className="text-[10px] uppercase tracking-[0.8px] mt-0.5"
-                style={{ color: "rgba(232,237,228,0.5)" }}
-              >
-                {label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
+      {/* Mountain accent — decorative, sits in the full-bleed margin past the container */}
       <svg
-        className="absolute bottom-0 right-0 pointer-events-none hidden sm:block"
+        className="absolute bottom-0 right-0 pointer-events-none hidden md:block z-0"
         width="340"
         height="180"
         viewBox="0 0 340 180"
@@ -73,6 +31,68 @@ export function HeroSection({ providerCount, avgRating, areaCount }: HeroSection
           opacity="0.5"
         />
       </svg>
+
+      <div className="bv-container relative">
+        {/* STR cabin photo — right edge flush with container, not viewport */}
+        <Image
+          src="/short-term-rental-canmore.png"
+          alt=""
+          width={1466}
+          height={836}
+          priority
+          aria-hidden
+          className="absolute z-[1] hidden md:block w-[58%] max-w-[780px] h-auto pointer-events-none select-none rounded-tr-[40px]"
+          style={{
+            bottom: "-1px",
+            right: "calc(100% - 220px - 1.25rem - min(880px, 100% - 220px - 2.5rem) - 48px)",
+          }}
+        />
+
+        <div className="relative z-10 pb-0">
+          <p
+            className="text-[10px] tracking-[2px] uppercase font-semibold mb-3"
+            style={{ color: "var(--bv-amber)" }}
+          >
+            Canadian Rockies · Canmore · Banff · Cochrane
+          </p>
+
+          <h1
+            className="text-[26px] sm:text-[34px] lg:text-[38px] leading-[1.18] max-w-[420px] mb-4 font-playfair"
+            style={{ color: "var(--bv-frost)" }}
+          >
+            The <em className="italic" style={{ color: "var(--bv-sage)" }}>intelligent</em>{" "}
+            matchmaker for Rocky Mountain cleaning
+          </h1>
+
+          <p
+            className="text-[13px] leading-relaxed max-w-[360px] mb-8"
+            style={{ color: "rgba(232,237,228,0.65)" }}
+          >
+            Connect with vetted, specialist cleaners for STR turnovers, luxury properties, and
+            post-construction. Not just any cleaner — the right one.
+          </p>
+
+          <div className="flex flex-wrap gap-8 pb-10">
+            {[
+              { val: String(providerCount), label: "Verified providers" },
+              { val: avgRating, label: "Avg. rating" },
+              { val: String(areaCount), label: "Local areas" },
+            ].map(({ val, label }) => (
+              <div key={label}>
+                <div className="text-[24px] font-semibold" style={{ color: "var(--bv-frost)" }}>
+                  {val}
+                </div>
+                <div
+                  className="text-[10px] uppercase tracking-[0.8px] mt-0.5"
+                  style={{ color: "rgba(232,237,228,0.5)" }}
+                >
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
