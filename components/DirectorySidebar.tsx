@@ -101,7 +101,7 @@ export function DirectorySidebar({
 
   return (
     <aside
-      className="hidden lg:block w-[220px] flex-shrink-0 border-r p-5"
+      className="hidden md:block w-[220px] flex-shrink-0 border-r p-5"
       style={{ backgroundColor: "white", borderColor: "var(--bv-border)" }}
     >
       <SidebarSection

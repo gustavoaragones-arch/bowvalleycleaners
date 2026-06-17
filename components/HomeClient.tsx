@@ -252,7 +252,8 @@ export function HomeClient({ companies }: HomeClientProps) {
       <SearchBar onSearch={handleSearch} />
       <QuickFilters active={activeQuickFilters} onChange={setActiveQuickFilters} />
 
-      <div className="flex" id="directory-results">
+      <div className="bv-container" id="directory-results">
+        <div className="flex gap-0">
         <DirectorySidebar
           locationItems={sidebarData.locationItems}
           specialtyItems={sidebarData.specialtyItems}
@@ -262,7 +263,7 @@ export function HomeClient({ companies }: HomeClientProps) {
           onFiltersChange={handleSidebarChange}
         />
 
-        <main className="flex-1 min-w-0 p-4 sm:p-5" style={{ backgroundColor: "var(--bv-snow)" }}>
+        <main className="flex-1 min-w-0 p-5" style={{ backgroundColor: "var(--bv-snow)" }}>
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-4">
             <p className="text-[12px]" style={{ color: "var(--bv-slate)" }}>
               <strong style={{ color: "var(--bv-summit)" }}>
@@ -283,7 +284,7 @@ export function HomeClient({ companies }: HomeClientProps) {
           </div>
 
           {filteredCompanies.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-[880px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[880px]">
               {filteredCompanies.map((company) => (
                 <CompanyCard
                   key={company.id}
@@ -321,6 +322,7 @@ export function HomeClient({ companies }: HomeClientProps) {
             </div>
           )}
         </main>
+        </div>
       </div>
 
       <TrustBar />

@@ -10,7 +10,7 @@ export function HeroSection({ providerCount, avgRating, areaCount }: HeroSection
       className="relative overflow-hidden"
       style={{ backgroundColor: "var(--bv-summit)", paddingTop: "52px", paddingBottom: 0 }}
     >
-      <div className="relative z-10 px-4 sm:px-9 pb-0">
+      <div className="relative z-10 bv-container pb-0">
         <p
           className="text-[10px] tracking-[2px] uppercase font-semibold mb-3"
           style={{ color: "var(--bv-amber)" }}
@@ -19,7 +19,7 @@ export function HeroSection({ providerCount, avgRating, areaCount }: HeroSection
         </p>
 
         <h1
-          className="text-[32px] sm:text-[38px] leading-[1.18] max-w-[420px] mb-4 font-playfair"
+          className="text-[26px] sm:text-[34px] lg:text-[38px] leading-[1.18] max-w-[420px] mb-4 font-playfair"
           style={{ color: "var(--bv-frost)" }}
         >
           The <em className="italic" style={{ color: "var(--bv-sage)" }}>intelligent</em>{" "}
@@ -34,7 +34,7 @@ export function HeroSection({ providerCount, avgRating, areaCount }: HeroSection
           post-construction. Not just any cleaner — the right one.
         </p>
 
-        <div className="flex gap-8 pb-10">
+        <div className="flex flex-wrap gap-8 pb-10">
           {[
             { val: String(providerCount), label: "Verified providers" },
             { val: avgRating, label: "Avg. rating" },
