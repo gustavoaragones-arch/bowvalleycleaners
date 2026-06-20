@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { MatchmakerForm } from "@/components/MatchmakerForm";
 import { Shield, Clock, Star } from "lucide-react";
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Reads ?preferred_provider= from the URL — passed by CompanyCard CTA
 function GetQuotePage({
   searchParams,
 }: {
@@ -36,77 +36,70 @@ async function GetQuoteInner({
     : "";
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col" style={{ backgroundColor: "var(--bv-snow)" }}>
       <main className="flex flex-1 flex-col lg:flex-row">
-        {/* ---------------------------------------------------------------- */}
-        {/* LEFT PANEL — value prop                                           */}
-        {/* ---------------------------------------------------------------- */}
-        <div className="relative flex flex-col justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-8 py-14 text-white lg:w-2/5 lg:px-12 lg:py-0">
-          {/* Mountain texture */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400'%3E%3Cpolygon fill='white' points='0,400 200,100 400,250 600,50 800,200 1000,80 1200,300 1200,400'/%3E%3C/svg%3E\")",
-              backgroundSize: "cover",
-              backgroundPosition: "bottom",
-            }}
-          />
-
+        {/* LEFT PANEL */}
+        <div className="relative flex flex-col justify-center bv-hero px-8 py-14 lg:w-2/5 lg:px-12 lg:py-0">
           <div className="relative">
-            <a href="/" className="mb-10 flex items-center gap-2 select-none">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-sky-600 text-sm font-black text-white">
+            <Link href="/" className="mb-10 flex items-center gap-2 select-none no-underline">
+              <span
+                className="flex size-8 items-center justify-center rounded-lg text-sm font-black text-white font-playfair"
+                style={{ backgroundColor: "var(--bv-amber)" }}
+              >
                 BV
               </span>
-              <span className="text-sm font-semibold text-white/80">
+              <span className="text-sm font-semibold" style={{ color: "rgba(232,237,228,0.8)" }}>
                 BowValleyCleaners.ca
               </span>
-            </a>
+            </Link>
 
-            <h1 className="text-3xl font-extrabold leading-tight tracking-tight lg:text-4xl">
+            <h1 className="text-3xl font-playfair leading-tight tracking-tight lg:text-4xl">
               Find Your Perfect Cleaner.
             </h1>
-            <p className="mt-2 text-xl font-semibold text-sky-300">
+            <p className="mt-2 text-xl font-semibold" style={{ color: "var(--bv-amber)" }}>
               Get 3 tailored quotes in 24 hours.
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            <p className="mt-4 text-sm leading-relaxed" style={{ color: "rgba(232,237,228,0.65)" }}>
               Tell us about your property and we&apos;ll personally match you
               with vetted, specialist cleaners who serve your exact area.
             </p>
 
             {provider && (
-              <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-sm text-sky-300">
-                <Star className="size-3.5 fill-sky-400 text-sky-400" />
+              <div className="mt-5 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm bv-hero-badge">
+                <Star className="size-3.5" style={{ color: "var(--bv-amber)" }} />
                 Preferred provider:{" "}
-                <span className="font-semibold text-white">{provider}</span>
+                <span className="font-semibold">{provider}</span>
               </div>
             )}
 
             <div className="mt-10 space-y-4">
               {[
                 {
-                  icon: <Clock className="size-4 text-sky-400" />,
+                  icon: <Clock className="size-4" style={{ color: "var(--bv-amber)" }} />,
                   title: "Quotes within 24 hours",
                   body: "Our matchmakers work fast so your property doesn't sit idle.",
                 },
                 {
-                  icon: <Shield className="size-4 text-emerald-400" />,
+                  icon: <Shield className="size-4" style={{ color: "var(--bv-sage)" }} />,
                   title: "No obligation, ever",
                   body: "Compare quotes and choose freely — we never charge you.",
                 },
                 {
-                  icon: <Star className="size-4 text-amber-400" />,
+                  icon: <Star className="size-4" style={{ color: "var(--bv-amber)" }} />,
                   title: "Only vetted specialists",
                   body: "Every cleaner in our directory is rated 4.5+ on Google.",
                 },
               ].map(({ icon, title, body }) => (
                 <div key={title} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/10">
+                  <div
+                    className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: "rgba(232,237,228,0.1)" }}
+                  >
                     {icon}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{title}</p>
-                    <p className="text-xs text-slate-400">{body}</p>
+                    <p className="text-sm font-semibold">{title}</p>
+                    <p className="text-xs" style={{ color: "rgba(232,237,228,0.5)" }}>{body}</p>
                   </div>
                 </div>
               ))}
@@ -114,9 +107,7 @@ async function GetQuoteInner({
           </div>
         </div>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* RIGHT PANEL — form                                                */}
-        {/* ---------------------------------------------------------------- */}
+        {/* RIGHT PANEL */}
         <div className="flex flex-1 items-start justify-center px-6 py-12 lg:items-center lg:px-12 lg:py-0">
           <div className="w-full max-w-lg">
             <MatchmakerForm preferredProvider={provider} />

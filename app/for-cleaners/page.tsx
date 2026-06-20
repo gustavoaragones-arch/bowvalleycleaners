@@ -65,33 +65,24 @@ const STANDARDS = [
 
 export default function ForCleanersPage() {
   return (
-    <main className="flex-1">
+    <main className="flex-1" style={{ backgroundColor: "var(--bv-snow)" }}>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* HERO                                                                 */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 px-4 py-20 text-center sm:px-6 sm:py-28">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400'%3E%3Cpolygon fill='white' points='0,400 200,100 400,250 600,50 800,200 1000,80 1200,300 1200,400'/%3E%3C/svg%3E\")",
-            backgroundSize: "cover",
-            backgroundPosition: "bottom",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-300">
+      {/* HERO */}
+      <section className="relative overflow-hidden bv-hero py-20 text-center sm:py-28">
+        <div className="bv-container relative">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium bv-hero-badge">
             <Users className="size-3" />
             Provider Partner Portal
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mx-auto max-w-3xl text-4xl font-playfair tracking-tight sm:text-5xl lg:text-6xl">
             Join Bow Valley&apos;s Premier Cleaning Network
           </h1>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+          <p
+            className="mx-auto mt-5 max-w-2xl text-base leading-relaxed sm:text-lg"
+            style={{ color: "rgba(232,237,228,0.65)" }}
+          >
             We don&apos;t just send leads — we connect high-value property managers
             and luxury homeowners with the top 20% of cleaning talent in the
             Bow Valley.
@@ -99,26 +90,27 @@ export default function ForCleanersPage() {
 
           <a
             href="#apply"
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-sky-500 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition-colors hover:bg-sky-400"
+            className="mt-8 inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold bv-btn-primary transition-opacity"
           >
             Apply for Inclusion <ArrowRight className="size-4" />
           </a>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* VALUE PROPOSITION                                                    */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-background px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-6xl">
+      {/* VALUE PROPOSITION */}
+      <section className="border-b py-16 sm:py-20" style={{ borderColor: "var(--bv-border)" }}>
+        <div className="bv-container">
           <div className="mb-10 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sky-600">
+            <p
+              className="text-xs font-semibold uppercase tracking-widest"
+              style={{ color: "var(--bv-amber)" }}
+            >
               Why Partner With Us
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-playfair tracking-tight sm:text-3xl" style={{ color: "var(--bv-summit)" }}>
               Built for operators, not hobbyists
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+            <p className="mx-auto mt-3 max-w-2xl text-sm" style={{ color: "var(--bv-slate)" }}>
               We partner with cleaners who can handle strict-turnover STRs,
               luxury homes, and post-construction environments — not generic
               residential one-offs.
@@ -129,13 +121,14 @@ export default function ForCleanersPage() {
             {BENEFITS.map(({ icon: Icon, title, body }) => (
               <div
                 key={title}
-                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                className="rounded-2xl border bg-white p-6 bv-card-hover"
+                style={{ borderColor: "var(--bv-border)" }}
               >
-                <div className="mb-4 flex size-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+                <div className="mb-4 flex size-10 items-center justify-center rounded-xl bv-icon-box">
                   <Icon className="size-5" />
                 </div>
-                <h3 className="text-base font-semibold text-foreground">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <h3 className="text-base font-semibold" style={{ color: "var(--bv-summit)" }}>{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--bv-slate)" }}>
                   {body}
                 </p>
               </div>
@@ -144,45 +137,45 @@ export default function ForCleanersPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* HOW IT WORKS                                                         */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-muted/30 px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-6xl">
+      {/* HOW IT WORKS */}
+      <section className="border-b py-16 sm:py-20" style={{ borderColor: "var(--bv-border)", backgroundColor: "var(--bv-bone)" }}>
+        <div className="bv-container">
           <div className="mb-10 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--bv-slate)" }}>
               How It Works
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-playfair tracking-tight sm:text-3xl" style={{ color: "var(--bv-summit)" }}>
               Operations-driven onboarding
             </h2>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
             {STEPS.map(({ step, title, body }) => (
-              <div key={step} className="relative rounded-2xl border border-border bg-background p-6">
-                <span className="text-3xl font-black text-sky-100">{step}</span>
-                <h3 className="mt-2 text-base font-semibold text-foreground">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+              <div
+                key={step}
+                className="relative rounded-2xl border bg-white p-6"
+                style={{ borderColor: "var(--bv-border)" }}
+              >
+                <span className="text-3xl font-black" style={{ color: "var(--bv-frost)" }}>{step}</span>
+                <h3 className="mt-2 text-base font-semibold" style={{ color: "var(--bv-summit)" }}>{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--bv-slate)" }}>{body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* TRUST & STANDARDS                                                    */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-slate-950 px-4 py-10 sm:px-6">
-        <div className="mx-auto max-w-6xl">
+      {/* TRUST & STANDARDS */}
+      <section className="bv-hero border-b py-10" style={{ borderColor: "rgba(232,237,228,0.08)" }}>
+        <div className="bv-container">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
             <div className="flex items-center gap-3 text-center sm:text-left">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bv-icon-box">
                 <ShieldCheck className="size-5" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-white">Trust &amp; Standards</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-sm font-bold">Trust &amp; Standards</h2>
+                <p style={{ color: "rgba(232,237,228,0.5)" }} className="text-xs">
                   We maintain a curated network — not an open directory.
                 </p>
               </div>
@@ -192,9 +185,10 @@ export default function ForCleanersPage() {
               {STANDARDS.map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-1.5 text-xs text-slate-300"
+                  className="flex items-center gap-1.5 text-xs"
+                  style={{ color: "rgba(232,237,228,0.7)" }}
                 >
-                  <Zap className="size-3 shrink-0 text-emerald-400" />
+                  <Zap className="size-3 shrink-0" style={{ color: "var(--bv-sage)" }} />
                   {item}
                 </li>
               ))}
@@ -203,50 +197,51 @@ export default function ForCleanersPage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* APPLICATION FORM                                                     */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="apply" className="scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-2xl">
+      {/* APPLICATION FORM */}
+      <section id="apply" className="scroll-mt-20 py-16 sm:py-20">
+        <div className="bv-container max-w-2xl">
           <div className="mb-8 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sky-600">
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--bv-amber)" }}>
               Partner Application
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-playfair tracking-tight sm:text-3xl" style={{ color: "var(--bv-summit)" }}>
               Apply for network inclusion
             </h2>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-3 text-sm" style={{ color: "var(--bv-slate)" }}>
               Provide your operational details below. Accurate service areas and
               specializations help us route the right leads from day one.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <div
+            className="rounded-2xl border bg-white p-6 sm:p-8"
+            style={{ borderColor: "var(--bv-border)" }}
+          >
             <CleanerApplicationForm />
           </div>
 
-          <p className="mt-6 text-center text-xs text-muted-foreground">
+          <p className="mt-6 text-center text-xs" style={{ color: "var(--bv-slate)" }}>
             Questions before applying?{" "}
-            <a
-              href="mailto:contact@bowvalleycleaners.ca"
-              className="text-sky-600 hover:underline"
-            >
+            <a href="mailto:contact@bowvalleycleaners.ca" className="bv-link hover:underline">
               contact@bowvalleycleaners.ca
             </a>
           </p>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* FOOTER CTA                                                           */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-t border-border bg-muted/30 px-4 py-10 text-center sm:px-6">
-        <p className="text-sm text-muted-foreground">
-          Already listed and need to update your profile?{" "}
-          <Link href="/" className="font-medium text-sky-600 hover:underline">
-            View the directory
-          </Link>
-        </p>
+      {/* FOOTER CTA */}
+      <section
+        className="border-t py-10 text-center"
+        style={{ borderColor: "var(--bv-border)", backgroundColor: "var(--bv-bone)" }}
+      >
+        <div className="bv-container">
+          <p className="text-sm" style={{ color: "var(--bv-slate)" }}>
+            Already listed and need to update your profile?{" "}
+            <Link href="/" className="font-medium bv-link hover:underline">
+              View the directory
+            </Link>
+          </p>
+        </div>
       </section>
 
     </main>

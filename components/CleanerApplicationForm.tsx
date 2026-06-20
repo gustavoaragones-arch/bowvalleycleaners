@@ -13,8 +13,8 @@ import {
   submitCleanerApplication,
   type CleanerApplicationInput,
 } from "@/app/actions/submit-cleaner-application";
+import { getSpecBadgeStyle } from "@/lib/badges";
 import type { ServiceArea, Specialization } from "@/types/company";
-import { SPECIALIZATION_COLORS } from "@/types/company";
 
 const SERVICE_AREAS: ServiceArea[] = [
   "Canmore",
@@ -114,8 +114,8 @@ export function CleanerApplicationForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-8 text-center">
-        <CheckCircle2 className="mx-auto size-10 text-emerald-600" />
+      <div className="rounded-2xl bv-success-panel p-8 text-center">
+        <CheckCircle2 className="mx-auto size-10" style={{ color: "var(--bv-forest)" }} />
         <h3 className="mt-4 text-lg font-bold text-foreground">
           Application received
         </h3>
@@ -206,8 +206,8 @@ export function CleanerApplicationForm() {
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs font-medium transition-all",
                   active
-                    ? "border-sky-500 bg-sky-50 text-sky-700 shadow-sm"
-                    : "border-border bg-background text-muted-foreground hover:border-sky-300"
+                    ? "bv-chip-active shadow-sm"
+                    : "bv-chip-inactive hover:border-[var(--bv-sage)]"
                 )}
               >
                 {area}
@@ -228,7 +228,6 @@ export function CleanerApplicationForm() {
         <div className="flex flex-wrap gap-2">
           {SPECIALIZATIONS.map((spec) => {
             const active = selectedSpecs?.includes(spec);
-            const colors = SPECIALIZATION_COLORS[spec];
             return (
               <button
                 key={spec}
@@ -236,10 +235,9 @@ export function CleanerApplicationForm() {
                 onClick={() => toggleSpec(spec)}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset transition-all",
-                  active
-                    ? `${colors.bg} ${colors.text} ${colors.ring} shadow-sm`
-                    : "bg-muted text-muted-foreground ring-transparent hover:ring-border"
+                  !active && "bg-muted text-muted-foreground ring-transparent hover:ring-border"
                 )}
+                style={active ? getSpecBadgeStyle(spec) : undefined}
               >
                 {spec}
               </button>
@@ -260,7 +258,7 @@ export function CleanerApplicationForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-11 w-full rounded-xl bg-sky-600 text-sm font-semibold text-white hover:bg-sky-500"
+        className="h-11 w-full rounded-xl bv-btn-primary text-sm font-semibold"
       >
         {isSubmitting ? (
           <>

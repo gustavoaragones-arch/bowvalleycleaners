@@ -55,21 +55,21 @@ export const PROPERTY_TYPE_CONFIG: Record<
   "Airbnb / STR": {
     icon: "🏠",
     description: "Short-term rental turnover between guest stays",
-    color: "border-rose-300 bg-rose-50 ring-rose-400",
+    color: "border-[var(--badge-airbnb-fg)] bg-[var(--badge-airbnb-bg)] ring-[var(--badge-airbnb-fg)]",
   },
   "Luxury Residential": {
     icon: "✨",
     description: "White-glove cleaning for high-end private homes",
-    color: "border-amber-300 bg-amber-50 ring-amber-400",
+    color: "border-[var(--badge-luxury-fg)] bg-[var(--badge-luxury-bg)] ring-[var(--badge-luxury-fg)]",
   },
   Commercial: {
     icon: "🏢",
     description: "Office, retail, or hospitality facilities",
-    color: "border-sky-300 bg-sky-50 ring-sky-400",
+    color: "border-[var(--badge-post-fg)] bg-[var(--badge-post-bg)] ring-[var(--badge-post-fg)]",
   },
   "Post-Construction": {
     icon: "🏗️",
     description: "Deep clean after a renovation or new build",
-    color: "border-orange-300 bg-orange-50 ring-orange-400",
+    color: "border-[var(--badge-post-fg)] bg-[var(--badge-post-bg)] ring-[var(--badge-post-fg)]",
   },
 };

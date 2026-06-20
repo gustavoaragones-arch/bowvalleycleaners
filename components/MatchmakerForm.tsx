@@ -88,7 +88,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
             key={i}
             className={cn(
               "h-1.5 flex-1 rounded-full transition-all duration-300",
-              i < step ? "bg-sky-500" : "bg-border"
+              i < step ? "bg-[var(--bv-amber)]" : "bg-border"
             )}
           />
         ))}
@@ -174,8 +174,8 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
   if (isSuccess) {
     return (
       <div className="flex flex-col items-center gap-6 py-8 text-center">
-        <div className="flex size-16 items-center justify-center rounded-full bg-emerald-100 ring-4 ring-emerald-200">
-          <CheckCircle2 className="size-8 text-emerald-600" />
+        <div className="flex size-16 items-center justify-center rounded-full bv-success-panel ring-4 ring-[var(--bv-sage)]">
+          <CheckCircle2 className="size-8" style={{ color: "var(--bv-forest)" }} />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-foreground">
@@ -198,22 +198,22 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
           <p className="font-medium text-foreground">What happens next?</p>
           <ol className="mt-2 space-y-1.5 text-muted-foreground">
             <li className="flex gap-2">
-              <span className="font-bold text-sky-600">1.</span>
+              <span className="font-bold" style={{ color: "var(--bv-amber)" }}>1.</span>
               We match your request to specialists in your area.
             </li>
             <li className="flex gap-2">
-              <span className="font-bold text-sky-600">2.</span>
+              <span className="font-bold" style={{ color: "var(--bv-amber)" }}>2.</span>
               You receive quotes by email within 24 hours.
             </li>
             <li className="flex gap-2">
-              <span className="font-bold text-sky-600">3.</span>
+              <span className="font-bold" style={{ color: "var(--bv-amber)" }}>3.</span>
               You choose — no obligation, no platform fees.
             </li>
           </ol>
         </div>
         <a
           href="/"
-          className="text-sm text-sky-600 underline-offset-2 hover:underline"
+          className="text-sm bv-link underline-offset-2 hover:underline"
         >
           ← Back to the directory
         </a>
@@ -247,10 +247,10 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
                   type="button"
                   onClick={() => setValue("property_type", type, { shouldValidate: true })}
                   className={cn(
-                    "flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
+                    "flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bv-alpine)]",
                     selected
                       ? `${config.color} ring-2`
-                      : "border-border bg-card hover:border-sky-300 hover:bg-sky-50/30"
+                      : "border-border bg-card hover:border-[var(--bv-sage)] hover:bg-[var(--bv-frost)]/30"
                   )}
                   aria-pressed={selected}
                 >
@@ -262,7 +262,7 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
                     </p>
                   </div>
                   {selected && (
-                    <CheckCircle2 className="ml-auto size-5 shrink-0 text-sky-600" />
+                    <CheckCircle2 className="ml-auto size-5 shrink-0" style={{ color: "var(--bv-amber)" }} />
                   )}
                 </button>
               );
@@ -306,10 +306,10 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
                     }
                     aria-pressed={selected}
                     className={cn(
-                      "rounded-full border px-4 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
+                      "rounded-full border px-4 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bv-alpine)]",
                       selected
-                        ? "border-sky-500 bg-sky-500 text-white shadow-sm"
-                        : "border-border bg-card text-muted-foreground hover:border-sky-300 hover:text-foreground"
+                        ? "bv-chip-active shadow-sm"
+                        : "bv-chip-inactive hover:border-[var(--bv-sage)]"
                     )}
                   >
                     {area}
@@ -362,10 +362,10 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
                     }
                     aria-pressed={selected}
                     className={cn(
-                      "flex flex-col items-center gap-1 rounded-xl border-2 px-3 py-3 text-center text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
+                      "flex flex-col items-center gap-1 rounded-xl border-2 px-3 py-3 text-center text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bv-alpine)]",
                       selected
-                        ? "border-sky-500 bg-sky-50 text-sky-700 ring-1 ring-sky-400"
-                        : "border-border bg-card text-muted-foreground hover:border-sky-300"
+                        ? "border-[var(--bv-alpine)] bg-[var(--bv-frost)] text-[var(--bv-alpine)] ring-1 ring-[var(--bv-sage)]"
+                        : "border-border bg-card text-muted-foreground hover:border-[var(--bv-sage)]"
                     )}
                   >
                     <span className="text-xl">{TIMELINE_ICONS[t]}</span>
@@ -522,7 +522,7 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
           <Button
             type="button"
             onClick={goNext}
-            className="ml-auto gap-1.5 bg-sky-600 text-white hover:bg-sky-700"
+            className="ml-auto gap-1.5 bv-btn-primary"
           >
             Continue
             <ArrowRight className="size-4" />
@@ -532,7 +532,7 @@ export function MatchmakerForm({ preferredProvider = "" }: MatchmakerFormProps) 
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="ml-auto gap-2 bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-70"
+            className="ml-auto gap-2 bv-btn-secondary disabled:opacity-70"
           >
             {isSubmitting ? (
               <>

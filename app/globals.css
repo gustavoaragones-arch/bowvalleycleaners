@@ -188,4 +188,56 @@
       padding-right: 3rem;
     }
   }
+  .bv-hero {
+    background-color: var(--bv-summit);
+    color: var(--bv-frost);
+  }
+  .bv-hero-badge {
+    border: 1px solid rgba(196, 130, 10, 0.35);
+    background-color: rgba(196, 130, 10, 0.12);
+    color: var(--bv-amber);
+  }
+  .bv-btn-primary {
+    background-color: var(--bv-amber);
+    color: #fff;
+  }
+  .bv-btn-primary:hover {
+    opacity: 0.92;
+  }
+  .bv-btn-secondary {
+    background-color: var(--bv-alpine);
+    color: #fff;
+  }
+  .bv-btn-secondary:hover {
+    opacity: 0.92;
+  }
+  .bv-link {
+    color: var(--bv-amber);
+  }
+  .bv-link:hover {
+    text-decoration: underline;
+  }
+  .bv-icon-box {
+    background-color: var(--bv-frost);
+    color: var(--bv-alpine);
+  }
+  .bv-success-panel {
+    border: 1px solid rgba(107, 143, 94, 0.35);
+    background-color: rgba(234, 240, 232, 0.8);
+  }
+  .bv-trust-active {
+    border-color: var(--bv-sage);
+    background-color: rgba(234, 240, 232, 0.9);
+    color: var(--bv-forest);
+  }
+  .bv-chip-active {
+    border-color: var(--bv-alpine);
+    background-color: var(--bv-alpine);
+    color: #fff;
+  }
+  .bv-chip-inactive {
+    border-color: #c5cebc;
+    background-color: #fff;
+    color: var(--bv-alpine);
+  }
 }
