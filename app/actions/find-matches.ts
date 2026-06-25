@@ -2,7 +2,7 @@
 
 import { createAdminClient } from "@/lib/admin-supabase";
 import type { Lead } from "@/types/lead";
-import type { CompanyFull } from "@/types/company";
+import { COMPANY_FULL_SELECT, type CompanyFull } from "@/types/company";
 
 // ---------------------------------------------------------------------------
 // Property type → specialization keyword mapping.
@@ -38,11 +38,11 @@ export async function findMatches(lead: Lead): Promise<FindMatchesResult> {
   // Fetch all active companies with their areas and specializations
   const { data, error } = await supabase
     .from("companies_full")
-    .select("*");
+    .select(COMPANY_FULL_SELECT);
 
   if (error) throw new Error(`Database error: ${error.message}`);
 
-  const companies = (data ?? []) as CompanyFull[];
+  const companies = (data ?? []) as unknown as CompanyFull[];
   const targetSpecs = PROPERTY_TYPE_TO_SPECS[lead.property_type] ?? [];
 
   // -------------------------------------------------------------------------

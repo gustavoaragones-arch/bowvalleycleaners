@@ -14,7 +14,13 @@ import {
 import { supabase } from "@/lib/supabase";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type CompanyFull, type Specialization } from "@/types/company";
+import {
+  COMPANY_FULL_SELECT,
+  SPECIALIZATION_COLORS,
+  SPECIALIZATION_COLOR_FALLBACK,
+  type CompanyFull,
+  type Specialization,
+} from "@/types/company";
 
 // ---------------------------------------------------------------------------
 // Data fetching
@@ -22,12 +28,12 @@ import { SPECIALIZATION_COLORS, SPECIALIZATION_COLOR_FALLBACK, type CompanyFull,
 async function getCompany(slug: string): Promise<CompanyFull | null> {
   const { data, error } = await supabase
     .from("companies_full")
-    .select("*")
+    .select(COMPANY_FULL_SELECT)
     .eq("slug", slug)
     .single();
 
   if (error || !data) return null;
-  return data as CompanyFull;
+  return data as unknown as CompanyFull;
 }
 
 // ---------------------------------------------------------------------------

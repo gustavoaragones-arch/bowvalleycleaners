@@ -91,3 +91,28 @@ export interface CompanyFull extends Company {
   service_areas: ServiceArea[];
   specializations: Specialization[];
 }
+
+/** Explicit column list for companies_full queries (PostgREST). */
+export const COMPANY_FULL_SELECT = [
+  "id",
+  "created_at",
+  "name",
+  "slug",
+  "tagline",
+  "google_rating",
+  "review_count",
+  "years_in_business",
+  "website_url",
+  "phone_number",
+  "email",
+  "logo_url",
+  "is_featured",
+  "is_active",
+  "is_insured",
+  "is_licensed",
+  "is_background_checked",
+  "business_type",
+  "is_local",
+  "service_areas",
+  "specializations",
+].join(", ");

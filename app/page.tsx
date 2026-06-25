@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { HomeClient } from "@/components/HomeClient";
-import type { CompanyFull } from "@/types/company";
+import { COMPANY_FULL_SELECT, type CompanyFull } from "@/types/company";
 
 // Always fetch fresh — directory data changes as companies are added/updated
 export const dynamic = "force-dynamic";
@@ -93,7 +93,7 @@ async function getCompanies(): Promise<CompanyFull[]> {
 
   const { data, error } = await supabase
     .from("companies_full")
-    .select("*")
+    .select(COMPANY_FULL_SELECT)
     .order("is_featured", { ascending: false })
     .order("google_rating", { ascending: false });
 
@@ -102,7 +102,7 @@ async function getCompanies(): Promise<CompanyFull[]> {
     return MOCK_COMPANIES;
   }
 
-  return (data ?? []) as CompanyFull[];
+  return (data ?? []) as unknown as CompanyFull[];
 }
 
 export default async function HomePage() {

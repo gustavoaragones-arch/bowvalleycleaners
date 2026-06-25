@@ -117,7 +117,25 @@ create policy "Public read specializations"
 -- ============================================================
 create or replace view companies_full as
 select
-  c.*,
+  c.id,
+  c.created_at,
+  c.name,
+  c.slug,
+  c.tagline,
+  c.google_rating,
+  c.review_count,
+  c.years_in_business,
+  c.website_url,
+  c.phone_number,
+  c.email,
+  c.logo_url,
+  c.is_featured,
+  c.is_active,
+  c.is_insured,
+  c.is_licensed,
+  c.is_background_checked,
+  c.business_type,
+  c.is_local,
   coalesce(
     array_agg(distinct csa.area::text) filter (where csa.area is not null),
     '{}'::text[]
