@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { CompanyFull } from "@/types/company";
 import { getSpecBadgeStyle } from "@/lib/badges";
+import { LocalBusinessBadge } from "@/components/LocalBusinessBadge";
+import { cn } from "@/lib/utils";
 
 function AvatarInitials({ name, featured }: { name: string; featured?: boolean }) {
   const initials = name
@@ -54,6 +56,7 @@ export function CompanyCard({ company, featured }: CompanyCardProps) {
     is_insured,
     is_licensed,
     is_background_checked,
+    is_local,
     years_in_business,
     phone_number,
     email,
@@ -85,7 +88,11 @@ export function CompanyCard({ company, featured }: CompanyCardProps) {
         </div>
       )}
 
-      <div className="flex gap-3 mb-3">
+      {is_local && (
+        <LocalBusinessBadge className="absolute top-4 right-4 size-14 pointer-events-none" />
+      )}
+
+      <div className={cn("flex gap-3 mb-3", is_local && "pr-12")}>
         <AvatarInitials name={name} featured={isFeatured} />
         <div className="flex-1 min-w-0">
           <Link

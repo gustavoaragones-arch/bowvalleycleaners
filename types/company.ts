@@ -62,6 +62,7 @@ export interface Company {
   logo_url: string | null;
   is_featured: boolean;
   is_active: boolean;
+  is_local: boolean;
   // Trust verification flags
   is_insured: boolean;
   is_licensed: boolean;
