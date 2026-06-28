@@ -135,7 +135,7 @@ export function TurnoverChecklist() {
         style={{ borderColor: "var(--bv-border)", backgroundColor: "var(--bv-snow)" }}
       >
         <Link
-          href="/Unit_Cleaning_List.pdf"
+          href="/Unit_Cleaning_Checklist.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ size: "lg" }), "bv-btn-primary inline-flex w-full sm:w-auto")}
