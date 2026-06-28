@@ -26,6 +26,12 @@ export function Navbar() {
               Browse
             </Link>
             <Link
+              href="/resources/new-host"
+              className="text-[11px] tracking-widest uppercase text-white/60 hover:text-white/90 transition-colors no-underline"
+            >
+              New Host Guide
+            </Link>
+            <Link
               href="/for-cleaners"
               className="text-[11px] tracking-widest uppercase text-white/60 hover:text-white/90 transition-colors no-underline"
             >

@@ -240,4 +240,8 @@
     background-color: #fff;
     color: var(--bv-alpine);
   }
+  .prose-guide em {
+    font-style: italic;
+    color: var(--bv-summit);
+  }
 }

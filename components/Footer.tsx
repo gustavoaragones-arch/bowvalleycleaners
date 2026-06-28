@@ -25,7 +25,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="flex gap-8 sm:gap-12">
+          <div className="flex flex-wrap gap-8 sm:gap-12">
             <div>
               <div
                 className="text-[9px] uppercase tracking-[1.5px] mb-3 font-semibold"
@@ -38,6 +38,30 @@ export function Footer() {
                 { href: "/add-business", label: "Add Your Business" },
                 { href: "/for-cleaners", label: "For Cleaners" },
                 { href: "/about", label: "About This Directory" },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="block text-[12px] mb-2 no-underline hover:underline"
+                  style={{ color: "rgba(232,237,228,0.6)" }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div>
+              <div
+                className="text-[9px] uppercase tracking-[1.5px] mb-3 font-semibold"
+                style={{ color: "var(--bv-sage)" }}
+              >
+                Host Resources
+              </div>
+              {[
+                {
+                  href: "/resources/new-host",
+                  label: "STR Cleaning Guide for New Hosts",
+                },
+                { href: "/get-quote", label: "Get Cleaning Quotes" },
               ].map(({ href, label }) => (
                 <Link
                   key={href}

@@ -131,7 +131,12 @@ export default function AboutPage() {
           <p style={{ color: "var(--bv-slate)" }}>
             BowValleyCleaners.ca is an independent community resource. It was
             created and is maintained by a Canmore local who saw the same gap
-            everyone else did — and decided to do something about it.
+            everyone else did — and decided to do something about it. New STR
+            hosts can start with our{" "}
+            <Link href="/resources/new-host" className="bv-link hover:underline">
+              guide to hiring an STR cleaner in the Bow Valley
+            </Link>
+            .
           </p>
 
           <p style={{ color: "var(--bv-slate)" }}>
